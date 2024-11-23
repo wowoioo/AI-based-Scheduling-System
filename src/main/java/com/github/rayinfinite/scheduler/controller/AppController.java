@@ -5,10 +5,7 @@ import com.github.rayinfinite.scheduler.entity.Response;
 import com.github.rayinfinite.scheduler.service.AppService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -29,8 +26,15 @@ public class AppController {
     }
 
     @GetMapping("/data")
-    public Response getData(String startStr, String endStr) throws ParseException {
-        List<InputData> data = service.findByCourseDateBetween(startStr, endStr);
+    public Response getData(String startStr, String endStr,
+                            @RequestParam(required = false) List<String> teachers) throws ParseException {
+        List<InputData> data = service.findByCourseDateBetween(startStr, endStr, teachers);
+        return new Response(data);
+    }
+
+    @GetMapping("/teacher")
+    public Response getAllTeachers() {
+        List<String> data = service.getAllTeachers();
         return new Response(data);
     }
 }

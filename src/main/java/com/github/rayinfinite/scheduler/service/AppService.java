@@ -12,8 +12,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -23,15 +25,30 @@ public class AppService {
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
 
     public String upload(MultipartFile file) throws IOException {
-        System.out.println("Uploading file: " + file.getOriginalFilename());
+        log.info("Uploading file: {}", file.getOriginalFilename());
         ExcelReader excelReader = new ExcelReader(inputDataRepository);
         EasyExcel.read(file.getInputStream(), InputData.class, excelReader).sheet().doRead();
         return "success";
     }
 
-    public List<InputData> findByCourseDateBetween(String startDate, String endDate) throws ParseException {
+    public List<InputData> findByCourseDateBetween(String startDate, String endDate, List<String> teachers) throws ParseException {
         Date start = formatter.parse(startDate);
         Date end = formatter.parse(endDate);
-        return inputDataRepository.findByCourseDateBetween(start, end);
+        List<InputData> data = inputDataRepository.findByCourseDateBetween(start, end);
+        if (teachers != null && !teachers.isEmpty()) {
+            data.removeIf(inputData -> !teachers.contains(inputData.getTeacher1())
+                    && !teachers.contains(inputData.getTeacher2())
+                    && !teachers.contains(inputData.getTeacher3()));
+        }
+        return data;
+    }
+
+    public List<String> getAllTeachers() {
+        List<String> list = new ArrayList<>();
+        list.addAll(inputDataRepository.findTeacher1());
+        list.addAll(inputDataRepository.findTeacher2());
+        list.addAll(inputDataRepository.findTeacher3());
+        return list.stream().filter(Objects::nonNull).filter(s -> !s.isEmpty())
+                .distinct().sorted().toList();
     }
 }
