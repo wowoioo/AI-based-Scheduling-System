@@ -6,16 +6,14 @@ import com.github.rayinfinite.scheduler.excel.ExcelReader;
 import com.github.rayinfinite.scheduler.repository.InputDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.math3.genetics.GeneticAlgorithm;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -51,4 +49,5 @@ public class AppService {
         return list.stream().filter(Objects::nonNull).filter(s -> !s.isEmpty())
                 .distinct().sorted().toList();
     }
+
 }
