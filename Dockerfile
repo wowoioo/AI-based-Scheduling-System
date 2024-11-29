@@ -1,7 +1,7 @@
 FROM openjdk:21-jdk-slim-buster
 
 ENV SPRING_PROFILES_ACTIVE=prod
-ENV JAVA_OPTS="-XX:+UseZGC"
+ENV JAVA_OPTS="-XX:+UseZGC -XX:+ZGenerational"
 ENV NAME="scheduler-0.0.1.jar"
 
 WORKDIR /app

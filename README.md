@@ -1,5 +1,5 @@
-#AI-based Scheduling System
+# AI-based Scheduling System
 
 ```shell
-nohup java -jar -XX:+UseZGC ./target/scheduler-0.0.1.jar &
+nohup java -jar -XX:+UseZGC -XX:+ZGenerational ./target/scheduler-0.0.1.jar &
 ```

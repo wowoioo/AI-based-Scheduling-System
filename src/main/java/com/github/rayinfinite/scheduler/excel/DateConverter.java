@@ -4,6 +4,7 @@ import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ReadConverterContext;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DateConverter implements Converter<Date> {
@@ -16,14 +17,24 @@ public class DateConverter implements Converter<Date> {
 
     @Override
     public Date convertToJavaData(ReadConverterContext<?> context) {
-        String value = context.getReadCellData().getStringValue();
-        System.out.println(value);
-        if (value == null || value.isBlank()) {
-            return null;
-        }
         try {
-            System.out.println(formatter.parse(value));
-            return formatter.parse(value);
+            switch (context.getReadCellData().getType()) {
+                case NUMBER:
+                    // Excel stores dates as numbers, where 1 is 1900-01-01
+                    int days = context.getReadCellData().getNumberValue().intValue();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(1899, Calendar.DECEMBER, 30);
+                    calendar.add(Calendar.DAY_OF_MONTH, days);
+                    return calendar.getTime();
+                case STRING:
+                    String value = context.getReadCellData().getStringValue();
+                    if (value == null || value.isBlank()) {
+                        return null;
+                    }
+                    return formatter.parse(value);
+                default:
+                    return null;
+            }
         } catch (Exception e) {
             return null;
         }

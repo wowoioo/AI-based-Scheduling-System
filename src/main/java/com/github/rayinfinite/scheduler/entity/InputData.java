@@ -2,6 +2,7 @@ package com.github.rayinfinite.scheduler.entity;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.github.rayinfinite.scheduler.excel.DateConverter;
 import com.github.rayinfinite.scheduler.excel.IntegerConverter;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,7 +28,7 @@ public class InputData {
     String software;
     String cohort;
     String run;
-    //@ExcelProperty(converter = DateConverter.class)
+    @ExcelProperty(converter = DateConverter.class)
     Date courseDate;
     String week;
     String classroom;
