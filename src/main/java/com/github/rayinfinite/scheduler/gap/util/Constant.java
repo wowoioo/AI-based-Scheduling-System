@@ -30,7 +30,7 @@ public class Constant {
     public static final int TEACHER1 = 9;       // 授课教师1
     public static final int TEACHER2 = 10;      // 授课教师2
     public static final int TEACHER3 = 11;      // 授课教师3
-    public static final int MANAGER = 12;       // 课程管理员
+    public static final int MANAGER = 12;       // 课程经理
     public static final int CERT = 13;          // 证书类型
 
     // 参数范围定义（根据业务需求调整）
