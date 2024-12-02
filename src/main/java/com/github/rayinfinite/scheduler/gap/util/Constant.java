@@ -4,6 +4,7 @@ import com.github.rayinfinite.scheduler.entity.InputData;
 import com.github.rayinfinite.scheduler.gap.entity.Classroom;
 import com.github.rayinfinite.scheduler.gap.entity.TeachingPlan;
 import com.github.rayinfinite.scheduler.gap.entity.Time;
+import com.github.rayinfinite.scheduler.gap.entity.Teacher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +16,9 @@ public class Constant {
 
     public static List<TeachingPlan> PLAN_LIST = new ArrayList<>();
     public static List<Classroom> CLASSROOM_LIST = new ArrayList<>();
+    public static List<Teacher> TEACHER_LIST = new ArrayList<>();
     public static List<Time> TIME_LIST = new ArrayList<>();
 
-    // 基因字段索引（映射到 InputData 字段）
     public static final int COURSE_NAME = 0;    // 课程名称
     public static final int COURSE_CODE = 1;    // 课程代码
     public static final int DURATION = 2;       // 课程时长
@@ -37,15 +38,15 @@ public class Constant {
     public static final int MAX_DURATION = 10;  // 课程时长最大值
     public static final int MAX_CLASSROOM = 100; // 教室编号最大值
 
-    // 基因映射的实际数据
-    public static List<InputData> INPUT_DATA_LIST = new ArrayList<>(); // 所有课程的输入数据
+    // Actual Data
+    public static List<InputData> INPUT_DATA_LIST = new ArrayList<>(); // History data from Excel file
 
-    // 遗传算法配置参数
-    public static final int POPULATION_SIZE = 50;    // 种群大小
-    public static final int MAX_GENERATIONS = 1000;  // 最大进化代数
-    public static final double MUTATION_RATE = 0.05; // 突变率
-    public static final double CROSSOVER_RATE = 0.8; // 交叉率
-    public static final double FITNESS_THRESHOLD = 0.025; // 适应度阈值
+    // GA Parameters
+    public static final int POPULATION_SIZE = 50;
+    public static final int MAX_GENERATIONS = 1000;
+    public static final double MUTATION_RATE = 0.05;
+    public static final double CROSSOVER_RATE = 0.8;
+    public static final double FITNESS_THRESHOLD = 0.025;
 
 
 }

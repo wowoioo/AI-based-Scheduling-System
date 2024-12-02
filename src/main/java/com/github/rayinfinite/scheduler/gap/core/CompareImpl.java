@@ -14,23 +14,23 @@ public abstract class CompareImpl extends IntegerGene implements Gene {
     protected abstract Integer getIdentifyId();
 
     @Override
-    public int compareTo(Object a_otherGroupGene) {
-        if (a_otherGroupGene == null) {
+    public int compareTo(Object abss_otherGroupGene) {
+        if (abss_otherGroupGene == null) {
             return 1;
         }
         if (getIdentifyId() == null) {
-            if (((CompareImpl) a_otherGroupGene).getIdentifyId() == null) {
+            if (((CompareImpl) abss_otherGroupGene).getIdentifyId() == null) {
                 return 0;
             }else {
                 return -1;
             }
         }
-        return getIdentifyId().compareTo(((CompareImpl) a_otherGroupGene).getIdentifyId());
+        return getIdentifyId().compareTo(((CompareImpl) abss_otherGroupGene).getIdentifyId());
     }
 
     @Override
-    public boolean equals(Object a_otherGroupGene) {
-        return a_otherGroupGene instanceof CompareImpl && compareTo(a_otherGroupGene) == 0;
+    public boolean equals(Object abss_otherGroupGene) {
+        return abss_otherGroupGene instanceof CompareImpl && compareTo(abss_otherGroupGene) == 0;
     }
 
     @Override

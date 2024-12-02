@@ -9,6 +9,10 @@ import org.jgap.supergenes.Supergene;
 
 public class ABSSSuperGene extends AbstractSupergene {
 
+    public ABSSSuperGene() throws InvalidConfigurationException {
+        super();
+    }
+
     public ABSSSuperGene(Configuration conf) throws InvalidConfigurationException {
         super(conf);
     }
