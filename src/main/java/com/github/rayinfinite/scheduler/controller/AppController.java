@@ -1,5 +1,6 @@
 package com.github.rayinfinite.scheduler.controller;
 
+import com.github.rayinfinite.scheduler.entity.Classroom;
 import com.github.rayinfinite.scheduler.entity.InputData;
 import com.github.rayinfinite.scheduler.entity.Response;
 import com.github.rayinfinite.scheduler.service.AppService;
@@ -36,5 +37,23 @@ public class AppController {
     public Response getAllTeachers() {
         List<String> data = service.getAllTeachers();
         return new Response(data);
+    }
+
+    @GetMapping("/classroom")
+    public Response getAllClassrooms() {
+        List<Classroom> data = service.getAllClassrooms();
+        return new Response(data);
+    }
+
+    @PostMapping("/classroom")
+    public Response updateClassroom(Classroom classroom) {
+        var result = service.updateClassroom(classroom);
+        return new Response(result);
+    }
+
+    @DeleteMapping("/classroom/{id}")
+    public Response deleteClassroom(@PathVariable("id") Long classroomId) {
+        var result = service.deleteClassroom(classroomId);
+        return new Response(result);
     }
 }

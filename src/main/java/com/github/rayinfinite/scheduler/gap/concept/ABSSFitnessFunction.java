@@ -1,21 +1,16 @@
 package com.github.rayinfinite.scheduler.gap.concept;
 
-import cn.hutool.core.util.ArrayUtil;
-import org.apache.commons.lang3.ArrayUtils;
+import com.github.rayinfinite.scheduler.entity.Classroom;
 import org.apache.commons.lang3.StringUtils;
 
-import com.github.rayinfinite.scheduler.entity.InputData;
-import com.github.rayinfinite.scheduler.gap.concept.*;
 import com.github.rayinfinite.scheduler.gap.core.*;
 import com.github.rayinfinite.scheduler.gap.entity.*;
 import com.github.rayinfinite.scheduler.gap.util.Constant;
 
 import org.jgap.FitnessFunction;
-import org.jgap.Gene;
 import org.jgap.IChromosome;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Avoiding premature convergence: Fitness training

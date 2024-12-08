@@ -1,6 +1,6 @@
-package com.github.rayinfinite.scheduler.gap.entity;
+package com.github.rayinfinite.scheduler.entity;
 
-import com.alibaba.excel.annotation.ExcelIgnore;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -9,15 +9,15 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
+@Entity
 @Data
 @Accessors(chain = true)
 public class Classroom implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ExcelIgnore
-    private java.lang.String id;
+    private Long id;
 
-    private java.lang.String Name;
-    private java.lang.Integer Size;
-    private String Software;
+    private String name;
+    private Integer size;
+    private String software;
 }

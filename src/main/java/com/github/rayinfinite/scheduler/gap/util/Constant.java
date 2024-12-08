@@ -1,7 +1,7 @@
 package com.github.rayinfinite.scheduler.gap.util;
 
 import com.github.rayinfinite.scheduler.entity.InputData;
-import com.github.rayinfinite.scheduler.gap.entity.Classroom;
+import com.github.rayinfinite.scheduler.entity.Classroom;
 import com.github.rayinfinite.scheduler.gap.entity.TeachingPlan;
 import com.github.rayinfinite.scheduler.gap.entity.Time;
 import com.github.rayinfinite.scheduler.gap.entity.Teacher;

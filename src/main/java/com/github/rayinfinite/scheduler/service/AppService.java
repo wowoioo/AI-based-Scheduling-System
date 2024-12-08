@@ -1,31 +1,52 @@
 package com.github.rayinfinite.scheduler.service;
 
 import com.alibaba.excel.EasyExcel;
+import com.github.rayinfinite.scheduler.entity.Classroom;
 import com.github.rayinfinite.scheduler.entity.InputData;
 import com.github.rayinfinite.scheduler.excel.ExcelReader;
+import com.github.rayinfinite.scheduler.gap.GAService;
+import com.github.rayinfinite.scheduler.repository.ClassroomRepository;
 import com.github.rayinfinite.scheduler.repository.InputDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.math3.genetics.GeneticAlgorithm;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AppService {
     private final InputDataRepository inputDataRepository;
+    private final ClassroomRepository classroomRepository;
+    private final GAService gaService;
+    private final Lock lock = new ReentrantLock();
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
 
     public String upload(MultipartFile file) throws IOException {
+        lock.lock();
         log.info("Uploading file: {}", file.getOriginalFilename());
         ExcelReader excelReader = new ExcelReader(inputDataRepository);
         EasyExcel.read(file.getInputStream(), InputData.class, excelReader).sheet().doRead();
+        Thread.ofVirtual().start(() -> {
+            try {
+                List<InputData> inputDataList = inputDataRepository.findAll();
+                var result = gaService.getSchedule(inputDataList);
+                inputDataRepository.deleteAll();
+                inputDataRepository.saveAll(result);
+            } finally {
+                lock.unlock();
+            }
+        });
         return "success";
     }
 
@@ -50,4 +71,19 @@ public class AppService {
                 .distinct().sorted().toList();
     }
 
+    public List<Classroom> getAllClassrooms() {
+        return classroomRepository.findAll();
+    }
+
+    public Classroom updateClassroom(Classroom classroom) {
+        return classroomRepository.save(classroom);
+    }
+
+    public Classroom deleteClassroom(Long id) {
+        Classroom classroom = classroomRepository.findById(id).orElse(null);
+        if (classroom != null) {
+            classroomRepository.delete(classroom);
+        }
+        return classroom;
+    }
 }

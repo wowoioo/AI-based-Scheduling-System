@@ -20,7 +20,7 @@ public class TeachingPlan implements Serializable {
 
     private Date courseDate;      // 课程日期
     private String week;          // 星期几
-    private String classroom;     // 教室编号
+    private Long classroom;     // 教室编号
 
     private String teacher1;      // 授课教师1
     private String teacher2;      // 授课教师2
