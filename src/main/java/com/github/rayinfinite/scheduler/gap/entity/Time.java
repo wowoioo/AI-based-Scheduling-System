@@ -4,10 +4,14 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 @Data
 @Accessors(chain = true)
 public class Time implements Serializable {
-    private int weekOrder;    // 星期几
-    private int courseOrder;  // 课程顺序（一天中的节次）
+    private int weekOrder;
+    private int duration;
+    private List<Date> dates;
+//    private int courseOrder;
 }

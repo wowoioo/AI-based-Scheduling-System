@@ -9,7 +9,7 @@ import java.util.StringTokenizer;
 public class ABSSGene extends CompareImpl {
 
     @Getter
-    private Object value;  //Multiple Type Support
+    private String value = "";
     private int maxNumber;
     private int type;
 
@@ -38,7 +38,7 @@ public class ABSSGene extends CompareImpl {
 
     @Override
     protected Integer getIdentifyId() {
-        return this.value.hashCode(); // 使用 hashCode() 作为唯一标识符
+        return this.value != null ? this.value.hashCode() : 0; // 使用 String 的 hashCode 作为唯一标识符
     }
 
     @Override
@@ -52,7 +52,11 @@ public class ABSSGene extends CompareImpl {
 
     @Override
     public void setAllele(Object abss_newValue) {
-        this.value = abss_newValue;
+        if (abss_newValue instanceof String) {
+            this.value = (String) abss_newValue; // 确保传入的值是 String 类型
+        } else {
+            throw new IllegalArgumentException("Expected a String value for the gene.");
+        }
     }
 
     @Override
@@ -64,11 +68,12 @@ public class ABSSGene extends CompareImpl {
     public void setToRandomValue(RandomGenerator abss_numberGenerator) {
         // If type is Integer
         // Still Need Modification!!!
-        if (type == 0) {
-            this.value = abss_numberGenerator.nextInt(this.maxNumber);
+        if (this.type == 0) {
+
+            this.value = String.valueOf(abss_numberGenerator.nextInt(maxNumber));
         } else {
-            // If type is String
-            this.value = "RandomStringValue";
+            // 其他类型的基因，生成随机字符串或从预定义集合中选择
+            this.value = generateRandomStringValue();  // 示例：生成随机字符串
         }
     }
 
@@ -86,25 +91,32 @@ public class ABSSGene extends CompareImpl {
         try {
             this.type = Integer.parseInt(tokenizer.nextToken());
             this.maxNumber = Integer.parseInt(tokenizer.nextToken());
-            String valueStr = tokenizer.nextToken();
-
-            // set value according to type
-            if (this.type == 0) {
-                this.value = Integer.parseInt(valueStr); // Integer
-            } else {
-                this.value = valueStr; // String
-            }
-        } catch (ClassCastException e) {
+            this.value = tokenizer.nextToken();
+        } catch (NumberFormatException e) {
             throw new UnsupportedRepresentationException("Unknown representation format: Expecting correct types!");
         }
     }
 
     @Override
     public void applyMutation(int abss_index, double abss_percentage) {
+        // Still Need Modification!!!
+
         if (this.type == 0) {
-            this.value = this.getConfiguration().getRandomGenerator().nextInt(this.maxNumber);
+            // 如果是类型 0，生成随机整数并转换为 String
+            this.value = String.valueOf(this.getConfiguration().getRandomGenerator().nextInt(maxNumber));
         } else {
-            this.value = "MutatedString";
+            // 其他类型的基因，生成随机字符串或从预定义集合中选择
+            this.value = generateMutatedStringValue();
         }
+    }
+    private String generateRandomStringValue() {
+        String[] possibleValues = {"ClassroomA", "ClassroomB", "ClassroomC", "TimeSlot1", "TimeSlot2"};
+        return possibleValues[this.getConfiguration().getRandomGenerator().nextInt(possibleValues.length)];
+    }
+
+
+    private String generateMutatedStringValue() {
+        String[] possibleValues = {"MutatedClassroomA", "MutatedClassroomB", "MutatedClassroomC", "MutatedTimeSlot1", "MutatedTimeSlot2"};
+        return possibleValues[this.getConfiguration().getRandomGenerator().nextInt(possibleValues.length)];
     }
 }

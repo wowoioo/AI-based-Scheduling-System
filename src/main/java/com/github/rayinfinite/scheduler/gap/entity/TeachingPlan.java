@@ -15,7 +15,7 @@ public class TeachingPlan implements Serializable {
 
     private String software;      // 使用的软件
 
-    private String cohort;        // 班级（如全日制、非全日制）
+    private String cohort;        // 班级
     private String run;           // 课程运行批次
 
     private Date courseDate;      // 课程日期
@@ -29,8 +29,7 @@ public class TeachingPlan implements Serializable {
     private String manager;       // 课程管理员
     private String cert;          // 证书类型
 
-    private int classsSize;       // 班级大小（学生人数）
-    private String classroomType; // 教室类型
+    private int classSize;       // 班级大小（学生人数）
 
 
     /*private String firstTime;     // 第一次上课的时间
