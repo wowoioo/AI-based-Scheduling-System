@@ -7,17 +7,24 @@ import com.github.rayinfinite.scheduler.gap.entity.Time;
 import com.github.rayinfinite.scheduler.gap.entity.Teacher;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Constant {
     // 分隔符定义
     public static final String TOKEN_SEPARATOR = ":";
     public static final String GENE_DELIMITER = "+";
 
-    public static List<TeachingPlan> PLAN_LIST = new ArrayList<>();
-    public static List<Classroom> CLASSROOM_LIST = new ArrayList<>();
-    public static List<Teacher> TEACHER_LIST = new ArrayList<>();
-    public static List<Time> TIME_LIST = new ArrayList<>();
+//    public static List<TeachingPlan> PLAN_LIST = new ArrayList<>();
+//    public static List<Classroom> CLASSROOM_LIST = new ArrayList<>();
+//    public static List<Teacher> TEACHER_LIST = new ArrayList<>();
+//    public static List<Time> TIME_LIST = new ArrayList<>();
+
+    public static Map<String, Classroom> classroomMap = new HashMap<>();
+    public static Map<String, Time> timeMap = new HashMap<>();
+    public static Map<String, Teacher> teacherMap = new HashMap<>();
+    public static Map<String, TeachingPlan> planMap = new HashMap<>();
 
     public static Integer CLASSROOM = 0;
     public static Integer TIME  = 1;
