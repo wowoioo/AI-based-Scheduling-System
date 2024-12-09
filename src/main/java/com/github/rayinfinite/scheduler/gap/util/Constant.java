@@ -2,9 +2,7 @@ package com.github.rayinfinite.scheduler.gap.util;
 
 import com.github.rayinfinite.scheduler.entity.InputData;
 import com.github.rayinfinite.scheduler.entity.Classroom;
-import com.github.rayinfinite.scheduler.gap.entity.TeachingPlan;
-import com.github.rayinfinite.scheduler.gap.entity.Time;
-import com.github.rayinfinite.scheduler.gap.entity.Teacher;
+import com.github.rayinfinite.scheduler.gap.entity.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,19 +14,25 @@ public class Constant {
     public static final String TOKEN_SEPARATOR = ":";
     public static final String GENE_DELIMITER = "+";
 
-//    public static List<TeachingPlan> PLAN_LIST = new ArrayList<>();
-//    public static List<Classroom> CLASSROOM_LIST = new ArrayList<>();
-//    public static List<Teacher> TEACHER_LIST = new ArrayList<>();
-//    public static List<Time> TIME_LIST = new ArrayList<>();
+    public static List<TeachingPlan> PLAN_LIST = new ArrayList<>();
+    public static List<Classroom> CLASSROOM_LIST = new ArrayList<>();
+    public static List<Teacher1> TEACHER1_LIST = new ArrayList<>();
+    public static List<Teacher2> TEACHER2_LIST = new ArrayList<>();
+    public static List<Teacher3> TEACHER3_LIST = new ArrayList<>();
+    public static List<Time> TIME_LIST = new ArrayList<>();
 
     public static Map<String, Classroom> classroomMap = new HashMap<>();
     public static Map<String, Time> timeMap = new HashMap<>();
-    public static Map<String, Teacher> teacherMap = new HashMap<>();
+    public static Map<String, Teacher1> teacher1Map = new HashMap<>();
+    public static Map<String, Teacher2> teacher2Map = new HashMap<>();
+    public static Map<String, Teacher3> teacher3Map = new HashMap<>();
     public static Map<String, TeachingPlan> planMap = new HashMap<>();
 
     public static Integer CLASSROOM = 0;
     public static Integer TIME  = 1;
-    public static Integer TEACHER  = 2;
+    public static Integer TEACHER1  = 2;
+    public static Integer TEACHER2  = 3;
+    public static Integer TEACHER3  = 4;
 
 
 
