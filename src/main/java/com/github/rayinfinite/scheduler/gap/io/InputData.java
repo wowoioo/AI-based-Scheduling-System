@@ -1,9 +1,8 @@
 package com.github.rayinfinite.scheduler.gap.io;
 
 import com.github.rayinfinite.scheduler.entity.Classroom;
-import com.github.rayinfinite.scheduler.gap.entity.Teacher;
-import com.github.rayinfinite.scheduler.gap.entity.TeachingPlan;
-import com.github.rayinfinite.scheduler.gap.entity.Time;
+import com.github.rayinfinite.scheduler.gap.entity.*;
+import com.github.rayinfinite.scheduler.gap.entity.Teacher1;
 import com.github.rayinfinite.scheduler.gap.util.Constant;
 
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public class InputData {
         plan1.setRun("1");
         plan1.setCourseDate(new Date());
         plan1.setWeek(1);
-        plan1.setClassroom("Room1");
+        plan1.setClassroom(1L);
         plan1.setTeacher1("TBC");
         plan1.setTeacher2(" ");
         plan1.setTeacher3(" ");
@@ -52,16 +51,39 @@ public class InputData {
         Constant.CLASSROOM_LIST = classroomList;
 
         // 手动初始化 Teacher 数据
-        List<Teacher> teacherList = new ArrayList<>();
-        Teacher teacher1 = new Teacher();
+        List<Teacher1> teacher1List = new ArrayList<>();
+        Teacher1 teacher1 = new Teacher1();
         teacher1.setId("T1");
-        teacher1.setTeacher("TBC");
+        teacher1.setTeacher1("TBC");
         teacher1.setEnableCourse(List.of("course1"));
         teacher1.setUnavailableDate((List<Date>) new Date(1702108800000L));
-        teacherList.add(teacher1);
+        teacher1List.add(teacher1);
 
         // 将数据赋值给 Constant 类中的静态字段
-        Constant.TEACHER_LIST = teacherList;
+        Constant.TEACHER1_LIST = teacher1List;
+
+        // 手动初始化 Teacher 数据
+        List<Teacher2> teacher2List = new ArrayList<>();
+        Teacher2 teacher2 = new Teacher2();
+        teacher2.setId("T1");
+        teacher2.setTeacher2("TBC");
+        teacher2.setEnableCourse(List.of("course1"));
+        teacher2.setUnavailableDate((List<Date>) new Date(1702108800000L));
+        teacher2List.add(teacher2);
+
+        // 将数据赋值给 Constant 类中的静态字段
+        Constant.TEACHER2_LIST = teacher2List;// 手动初始化 Teacher 数据
+
+        List<Teacher3> teacher3List = new ArrayList<>();
+        Teacher3 teacher3 = new Teacher3();
+        teacher3.setId("T1");
+        teacher3.setTeacher3("TBC");
+        teacher3.setEnableCourse(List.of("course1"));
+        teacher3.setUnavailableDate((List<Date>) new Date(1702108800000L));
+        teacher3List.add(teacher3);
+
+        // 将数据赋值给 Constant 类中的静态字段
+        Constant.TEACHER3_LIST = teacher3List;
 
         // 手动初始化 Time 数据
         List<Time> timeList = new ArrayList<>();
