@@ -15,14 +15,14 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-public class Teacher implements Serializable {
+public class Teacher3 implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ExcelIgnore
     private java.lang.String id;
 
-    private String teacher;
+    private String teacher3;
     private List<String> enableCourse;
     private List<Date> unavailableDate;
 

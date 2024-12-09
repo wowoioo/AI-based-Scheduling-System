@@ -43,11 +43,16 @@ public class ABSSFitnessFunction extends FitnessFunction {
         double penalty = 0;
         ABSSGene classroomGene;
         ABSSGene timeGene;
-        ABSSGene teacherGene;
+        ABSSGene teacher1Gene;
+        ABSSGene teacher2Gene;
+        ABSSGene teacher3Gene;
+
 
         TeachingPlan plan;
         Classroom classroom;
-        Teacher teacher;
+        Teacher1 teacher1;
+        Teacher2 teacher2;
+        Teacher3 teacher3;
         Time time;
 
         // Extract supergenes from chromosome
@@ -60,15 +65,17 @@ public class ABSSFitnessFunction extends FitnessFunction {
         for (int i = 0;i < this.geneSize;i++) {
             classroomGene = (ABSSGene) s[i].geneAt(Constant.CLASSROOM);
             timeGene = (ABSSGene)s[i].geneAt(Constant.TIME);
-            teacherGene = (ABSSGene)s[i].geneAt(Constant.TEACHER);
+            teacher1Gene = (ABSSGene)s[i].geneAt(Constant.TEACHER1);
+            teacher2Gene = (ABSSGene)s[i].geneAt(Constant.TEACHER2);
+            teacher3Gene = (ABSSGene)s[i].geneAt(Constant.TEACHER3);
 
-            plan = Constant.planMap.get(i);
+            plan = Constant.PLAN_LIST.get(i);
             classroom = Constant.classroomMap.get(classroomGene.getValue());
             time = Constant.timeMap.get(timeGene.getValue());
-            teacher = Constant.teacherMap.get(teacherGene.getValue());
-
+            teacher1 = Constant.teacher1Map.get(teacher1Gene.getValue());
+            teacher2 = Constant.teacher2Map.get(teacher2Gene.getValue());
+            teacher3 = Constant.teacher3Map.get(teacher3Gene.getValue());
             int weekOrder = time.getWeekOrder();
-//            int duration = time.getDuration();
 
 
             //Classroom size & class size
@@ -89,17 +96,28 @@ public class ABSSFitnessFunction extends FitnessFunction {
                 map.put(cohortKey, 1);
             }
 
-            List<String> ABSSteachers = Arrays.asList(plan.getTeacher1(), plan.getTeacher2(), plan.getTeacher3());
-            for (String ABSSteacher : ABSSteachers) {
-                if (StringUtils.isNotBlank(ABSSteacher)) {
-                    String teacherKey = "teacher:" + weekOrder + ":" + teacher;
-                    Integer teacherValue = map.get(teacherKey);
-                    if (teacherValue != null) {
-                        map.put(teacherKey,teacherValue + 1);
-                    } else {
-                        map.put(teacherKey, 1);
-                    }
-                }
+            String teacher1Key = "teacher1:" + weekOrder+":"+plan.getTeacher1();
+            Integer teacher1Value = map.get(teacher1Key);
+            if(teacher1Value !=null){
+                map.put(teacher1Key,teacher1Value + 1);
+            }else{
+                map.put(teacher1Key,0);
+            }
+
+            String teacher2Key = "teacher2:" + weekOrder+":"+plan.getTeacher2();
+            Integer teacher2Value = map.get(teacher2Key);
+            if(teacher2Value !=null){
+                map.put(teacher2Key,teacher2Value + 1);
+            }else{
+                map.put(teacher2Key,0);
+            }
+
+            String teacher3Key = "teacher3:" + weekOrder+":"+plan.getTeacher3();
+            Integer teacher3Value = map.get(teacher3Key);
+            if(teacher3Value !=null){
+                map.put(teacher3Key,teacher3Value + 1);
+            }else{
+                map.put(teacher3Key,0);
             }
 
             String classroomKey = "classroom:" + weekOrder + ":" + classroom.getId();
@@ -111,18 +129,14 @@ public class ABSSFitnessFunction extends FitnessFunction {
             }
 
             //构造临时数据，用于后面检测冲突
-            String teacher1 = plan.getTeacher1();
-            String teacher2 = plan.getTeacher2();
-            String teacher3 = plan.getTeacher3();
-
             TeachingPlan teachingPlan = new TeachingPlan()
                     .setCourseName(plan.getCourseName())
                     .setCohort(plan.getCohort())
                     .setClassroom(classroom.getId())
-                    .setWeek(String.valueOf(time.getWeekOrder()))
-                    .setTeacher1(teacher1)
-                    .setTeacher2(teacher2)
-                    .setTeacher3(teacher3)
+                    .setWeek(time.getWeekOrder())
+                    .setTeacher1(teacher1.getTeacher1())
+                    .setTeacher2(teacher2.getTeacher2())
+                    .setTeacher3(teacher3.getTeacher3())
                     .setCourseCode(plan.getCourseCode())
                     .setDuration(1)
                     .setSoftware(null)
