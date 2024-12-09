@@ -39,15 +39,23 @@ public class AppService {
         EasyExcel.read(file.getInputStream(), InputData.class, excelReader).sheet().doRead();
         Thread.ofVirtual().start(() -> {
             try {
-                List<InputData> inputDataList = inputDataRepository.findAll();
-                var result = gaService.getSchedule(inputDataList);
-                inputDataRepository.deleteAll();
-                inputDataRepository.saveAll(result);
+                gjap();
             } finally {
                 lock.unlock();
             }
         });
         return "success";
+    }
+
+    public void gjap() {
+        List<InputData> inputDataList = inputDataRepository.findAll();
+        List<Classroom> classroomList = getAllClassrooms();
+        var result = gaService.getSchedule(inputDataList, classroomList);
+        for (InputData data : result) {
+            System.out.println(data);
+        }
+//        inputDataRepository.deleteAll();
+//        inputDataRepository.saveAll(result);
     }
 
     public List<InputData> findByCourseDateBetween(String startDate, String endDate, List<String> teachers) throws ParseException {

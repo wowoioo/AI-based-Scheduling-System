@@ -56,4 +56,10 @@ public class AppController {
         var result = service.deleteClassroom(classroomId);
         return new Response(result);
     }
+
+    @GetMapping("/schedule")
+    public Response getSchedule() {
+        service.gjap();
+        return new Response("success");
+    }
 }

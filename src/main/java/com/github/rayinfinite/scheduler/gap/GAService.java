@@ -1,5 +1,6 @@
 package com.github.rayinfinite.scheduler.gap;
 
+import com.github.rayinfinite.scheduler.entity.Classroom;
 import com.github.rayinfinite.scheduler.entity.InputData;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import java.util.List;
 
 @Service
 public class GAService {
-    public List<InputData> getSchedule(List<InputData> inputDataList) {
+    public List<InputData> getSchedule(List<InputData> inputDataList, List<Classroom> classroomList) {
         return Collections.emptyList();
     }
 }
