@@ -25,8 +25,8 @@ public class InputData {
         plan1.setCohort("Cohort1");
         plan1.setRun("1");
         plan1.setCourseDate(new Date());
-        plan1.setWeek(1);
-        plan1.setClassroom(1L);
+        plan1.setWeekOrder(1);
+        plan1.setClassroomId(1L);
         plan1.setTeacher1("TBC");
         plan1.setTeacher2(" ");
         plan1.setTeacher3(" ");

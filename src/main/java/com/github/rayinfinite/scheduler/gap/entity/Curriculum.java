@@ -9,12 +9,21 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 public class Curriculum implements Serializable {
-    private String cohort;        // 班级
-    private String courseName;        // 课程
+    private String cohort;
     private String courseCode;
-    private String teacher;       // 授课教师
-    private String classroom;     // 教室
-    private int weekOrder;
+    private String courseName;
+
+    private String teacher1;
+    private String teacher2;
+    private String teacher3;
+
+    private Long classId;
+
+//    private Integer classSize;
+//    private String software;
+
+    private Integer weekOrder;
+    private Date courseDate;
     private Integer duration;
 
 

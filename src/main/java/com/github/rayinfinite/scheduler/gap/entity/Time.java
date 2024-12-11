@@ -10,8 +10,9 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 public class Time implements Serializable {
-    private int weekOrder;
-    private int duration;
+    private Integer weekOrder;
+    private Date courseDate;
+    private Integer duration;
     private List<Date> dates;
 //    private int courseOrder;
 }
