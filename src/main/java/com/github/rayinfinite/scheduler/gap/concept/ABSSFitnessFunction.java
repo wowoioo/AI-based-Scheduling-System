@@ -17,7 +17,6 @@ import java.util.*;
  * `f`: current fitness value
  * `fmax`: population maximum fitness value
  * `favg`: population average fitness value
- *
  * FitnessFunction: F = (fmax - f) / (fmax - favg) * f
  */
 
@@ -28,16 +27,16 @@ public class ABSSFitnessFunction extends FitnessFunction {
     }
 
     /** 解组染色体 */
-    private ABSSSuperGene[] extractChromosome(IChromosome a_subject , int chromosomeSize) {
+    private ABSSSuperGene[] extractChromosome(IChromosome abssSubject , int chromosomeSize) {
         ABSSSuperGene[] arr = new ABSSSuperGene[chromosomeSize];
         for(int i = 0; i < chromosomeSize; i++){
-            arr[i] = (ABSSSuperGene)a_subject.getGene(i);
+            arr[i] = (ABSSSuperGene)abssSubject.getGene(i);
         }
         return arr;
     }
 
     @Override
-    protected double evaluate(IChromosome a_subject) {
+    protected double evaluate(IChromosome abssSubject) {
 
         /** 惩罚点 */
         double penalty = 0;
@@ -55,7 +54,7 @@ public class ABSSFitnessFunction extends FitnessFunction {
         Time time;
 
         // Extract supergenes from chromosome
-        ABSSSuperGene[] s = this.extractChromosome(a_subject, this.geneSize);
+        ABSSSuperGene[] s = this.extractChromosome(abssSubject, this.geneSize);
 
         Map<String, Integer> map = new HashMap<>();
         List<Curriculum> curriculumList = new ArrayList<>();
