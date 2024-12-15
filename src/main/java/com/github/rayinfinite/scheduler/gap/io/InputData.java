@@ -5,13 +5,9 @@ import com.github.rayinfinite.scheduler.gap.entity.*;
 import com.github.rayinfinite.scheduler.gap.entity.Teacher1;
 import com.github.rayinfinite.scheduler.gap.util.Constant;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-/**
- * @author yi
- */
+
 public class InputData {
 
     public static void read() {
@@ -33,6 +29,9 @@ public class InputData {
         plan1.setManager("-");
         plan1.setCert("-");
         plan1.setClassSize(30);
+        plan1.setCohortType("FT");
+        plan1.setCohortMajor("SE");
+        plan1.setCohortYear("1");
         planList.add(plan1);
 
         // 将数据赋值给 Constant 类中的静态字段
@@ -43,7 +42,7 @@ public class InputData {
         Classroom classroom1 = new Classroom();
         classroom1.setId(1L);
         classroom1.setName("Room1");
-        classroom1.setSize(30);
+        classroom1.setClassSize(30);
         classroom1.setSoftware("-");
         classroomList.add(classroom1);
 
@@ -94,5 +93,11 @@ public class InputData {
 
         // 将数据赋值给 Constant 类中的静态字段
         Constant.TIME_LIST = timeList;
+
+        // initialize major-course map
+        Constant.majorCourseMap.put("SE", new HashSet<>(Set.of("CC1", "CC2", "CC3")));
+        Constant.majorCourseMap.put("CS", new HashSet<>(Set.of("CS101", "CS102", "CS103")));
+        Constant.majorCourseMap.put("EE", new HashSet<>(Set.of("EE101", "EE102", "EE103")));
+        Constant.majorCourseMap.put("ME", new HashSet<>(Set.of("ME101", "ME102", "ME103")));
     }
 }

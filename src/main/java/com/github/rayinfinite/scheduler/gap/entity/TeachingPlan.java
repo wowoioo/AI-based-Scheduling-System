@@ -31,5 +31,9 @@ public class TeachingPlan implements Serializable {
 
     private Integer classSize;       // 班级大小（学生人数）
 
+    private String cohortType;
+    private String cohortMajor;
+    private String cohortYear;
+
 
 }

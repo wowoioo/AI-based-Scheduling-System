@@ -24,7 +24,7 @@ public class InputData {
     String courseName;
     String courseCode;
     @ExcelProperty(converter = IntegerConverter.class)
-    Integer duration;
+     Integer duration;
     String software;
     String cohort;
     String run;
@@ -37,4 +37,8 @@ public class InputData {
     String teacher3;
     String manager;
     String cert;
+
+    String cohortType;
+    String cohortMajor;
+    String cohortYear;
 }

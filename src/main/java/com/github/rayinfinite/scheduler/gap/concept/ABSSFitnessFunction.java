@@ -75,6 +75,7 @@ public class ABSSFitnessFunction extends FitnessFunction {
             teacher2 = Constant.teacher2Map.get(teacher2Gene.getValue());
             teacher3 = Constant.teacher3Map.get(teacher3Gene.getValue());
 
+
             Date courseDate = time.getCourseDate();
             int weekOrder = time.getWeekOrder();
 
@@ -93,7 +94,7 @@ public class ABSSFitnessFunction extends FitnessFunction {
             if (cohortValue != null) {
                 map.put(cohortKey, cohortValue + 1);
             } else {
-                map.put(cohortKey, 0);
+                map.put(cohortKey, 1);
             }
 
             String classroomKey = "classroom:" + weekOrder + ":" + classroom.getId();
@@ -101,7 +102,7 @@ public class ABSSFitnessFunction extends FitnessFunction {
             if (classroomValue != null) {
                 map.put(classroomKey, classroomValue + 1);
             } else {
-                map.put(classroomKey, 0);
+                map.put(classroomKey, 1);
             }
 
             String teacher1Key = "teacher1:" + weekOrder + ":" + plan.getTeacher1();
@@ -109,7 +110,7 @@ public class ABSSFitnessFunction extends FitnessFunction {
             if (teacher1Value != null) {
                 map.put(teacher1Key, teacher1Value + 1);
             } else {
-                map.put(teacher1Key, 0);
+                map.put(teacher1Key, 1);
             }
 
             String teacher2Key = "teacher2:" + weekOrder + ":" + plan.getTeacher2();
@@ -117,7 +118,7 @@ public class ABSSFitnessFunction extends FitnessFunction {
             if (teacher2Value != null) {
                 map.put(teacher2Key, teacher2Value + 1);
             } else {
-                map.put(teacher2Key, 0);
+                map.put(teacher2Key, 1);
             }
 
             String teacher3Key = "teacher3:" + weekOrder + ":" + plan.getTeacher3();
@@ -125,7 +126,7 @@ public class ABSSFitnessFunction extends FitnessFunction {
             if (teacher3Value != null) {
                 map.put(teacher3Key, teacher3Value + 1);
             } else {
-                map.put(teacher3Key, 0);
+                map.put(teacher3Key, 1);
             }
 
             //Mock for conflict detection
@@ -133,27 +134,58 @@ public class ABSSFitnessFunction extends FitnessFunction {
                     .setCohort(plan.getCohort())
                     .setCourseCode(plan.getCourseCode())
                     .setCourseName(plan.getCourseName())
-                    .setTeacher1(plan.getTeacher1())
-                    .setTeacher2(plan.getTeacher2())
-                    .setTeacher3(plan.getTeacher3())
+                    .setTeacher1(teacher1.getTeacher1())
+                    .setTeacher2(teacher2.getTeacher2())
+                    .setTeacher3(teacher3.getTeacher3())
                     .setClassId(classroom.getId())
                     .setWeekOrder(time.getWeekOrder())
                     .setCourseDate(time.getCourseDate())
                     .setDuration(time.getDuration())
+                    .setCohortType(plan.getCohortType())
+                    .setCohortMajor(plan.getCohortMajor())
+                    .setCohortYear(plan.getCohortYear())
             );
-        }
 
+            // Soft constraint: Cohort type and time slot
+            if ("FT".equalsIgnoreCase(plan.getCohortType())) {
+                if (weekOrder < 1 || weekOrder > 5) { // Monday to Friday
+                    penalty += 1000;
+                }
+            } else if ("PT".equalsIgnoreCase(plan.getCohortType())) {
+                if (weekOrder < 5 || weekOrder > 6) { // Friday or Saturday
+                    penalty += 100;
+                }
+            }
+
+            // Soft constraint: Cohort major and course code match
+            if (!matchesMajorCourses(plan.getCohortMajor(), plan.getCourseCode())) {
+                penalty += 1000; // Penalty for mismatched course code
+            }
+        }
 
         //-----detect time conflict
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             //same class/teacher/classroom in same time?
-            if (entry.getValue() != 0) {
+            if (entry.getValue() != 1) {
                 penalty += 1000;
             }
         }
 
             return 1 / (1 + penalty);
         }
+
+    /**
+     * 如果课程代码符合专业要求，返回 true；否则返回 false
+     */
+    private boolean matchesMajorCourses(String cohortMajor, String courseCode) {
+        Set<String> allowedCourseCodes = Constant.majorCourseMap.get(cohortMajor);
+
+        if (allowedCourseCodes == null) {
+            return true;
+        }
+
+        return allowedCourseCodes.contains(courseCode);
+    }
 
 }
 

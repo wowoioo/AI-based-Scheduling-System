@@ -4,10 +4,7 @@ import com.github.rayinfinite.scheduler.entity.InputData;
 import com.github.rayinfinite.scheduler.entity.Classroom;
 import com.github.rayinfinite.scheduler.gap.entity.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Constant {
     // 分隔符定义
@@ -27,6 +24,7 @@ public class Constant {
     public static Map<String, Teacher2> teacher2Map = new HashMap<>();
     public static Map<String, Teacher3> teacher3Map = new HashMap<>();
     public static Map<String, TeachingPlan> planMap = new HashMap<>();
+    public static Map<String, Set<String>> majorCourseMap = new HashMap<>();
 
     public static Integer CLASSROOM = 0;
     public static Integer TIME  = 1;
