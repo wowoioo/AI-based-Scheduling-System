@@ -57,8 +57,8 @@ public class Timetable {
         this.courses.put(courseId, new Course(courseId, practiceArea, courseCode, course, professorIds, software, courseManager, gradCert, professorNum, duration, run));
     }
 
-    public void addCohort(int cohortId, int cohortSize,int typeId, String cohortType, int courseIds[]) {
-        this.cohorts.put(cohortId, new Cohort(cohortId, cohortSize, typeId, cohortType, courseIds));
+    public void addCohort(int cohortId, String cohort, int cohortSize,int typeId, String cohortType, int courseIds[]) {
+        this.cohorts.put(cohortId, new Cohort(cohortId, cohort, cohortSize, typeId, cohortType, courseIds));
         this.plansNum = 0;
     }
 

@@ -8,17 +8,17 @@ public class TimetableOutput {
     public static class InputData {
         private String courseName;
         private String software;
-        private int cohortId;
+        private String cohort;
         private String roomNumber;
         private List<String> professors;
         private String time;
         private String courseManager;
         private String gradCert;
 
-        public InputData(String courseName, String software, int cohortId, String roomNumber, List<String> professors, String time, String courseManager, String gradCert) {
+        public InputData(String courseName, String software, String cohort, String roomNumber, List<String> professors, String time, String courseManager, String gradCert) {
             this.courseName = courseName;
             this.software = software;
-            this.cohortId = cohortId;
+            this.cohort = cohort;
             this.roomNumber = roomNumber;
             this.professors = professors;
             this.time = time;
@@ -31,7 +31,7 @@ public class TimetableOutput {
             return "InputData{" +
                     "courseName='" + courseName + '\'' +
                     ", software='" + software + '\'' +
-                    ", cohortId='" + cohortId + '\'' +
+                    ", cohort='" + cohort + '\'' +
                     ", roomNumber='" + roomNumber + '\'' +
                     ", professors=" + professors +
                     ", time='" + time + '\'' +
@@ -54,7 +54,7 @@ public class TimetableOutput {
         for (TeachingPlan bestplan : plans) {
             String courseName = timetable.getCourse(bestplan.getCourseId()).getCourseName();
             String software = timetable.getCourse(bestplan.getCourseId()).getSoftware();
-            int cohortId = timetable.getCohort(bestplan.getCohortId()).getCohortId();
+            String cohort = timetable.getCohort(bestplan.getCohortId()).getCohort();
             String roomNumber = timetable.getRoom(bestplan.getRoomId()).getRoomNumber();
 
             int professorNum = timetable.getCourse(bestplan.getCourseId()).getProfessorNum();
@@ -71,7 +71,7 @@ public class TimetableOutput {
             String courseManager = timetable.getCourse(bestplan.getCourseId()).getCourseManager();
             String gradCert = timetable.getCourse(bestplan.getCourseId()).getGradCert();
 
-            InputData inputData = new InputData(courseName, software, cohortId, roomNumber, professors, time, courseManager, gradCert);
+            InputData inputData = new InputData(courseName, software, cohort, roomNumber, professors, time, courseManager, gradCert);
             inputDataList.add(inputData);
         }
 
