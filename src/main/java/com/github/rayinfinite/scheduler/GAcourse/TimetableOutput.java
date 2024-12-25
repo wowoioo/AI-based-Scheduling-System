@@ -1,6 +1,8 @@
 package com.github.rayinfinite.scheduler.GAcourse;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TimetableOutput {
@@ -67,14 +69,21 @@ public class TimetableOutput {
                 professors.add(timetable.getProfessor(bestplan.getProfessor3Id()).getProfessorName());
             }
 
-            String time = timetable.getTimeslot(bestplan.getTimeslotId()).getTimeslot();
+            Date time = timetable.getTimeslot(bestplan.getTimeslotId()).getTimeslot();
+            String formattedDate = convertDateToString(time);
+
             String courseManager = timetable.getCourse(bestplan.getCourseId()).getCourseManager();
             String gradCert = timetable.getCourse(bestplan.getCourseId()).getGradCert();
 
-            InputData inputData = new InputData(courseName, software, cohort, roomNumber, professors, time, courseManager, gradCert);
+            InputData inputData = new InputData(courseName, software, cohort, roomNumber, professors, formattedDate, courseManager, gradCert);
             inputDataList.add(inputData);
         }
 
         return inputDataList;
+    }
+
+    public static String convertDateToString(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");  // 设置你想要的格式
+        return sdf.format(date);  // 格式化并返回 String
     }
 }

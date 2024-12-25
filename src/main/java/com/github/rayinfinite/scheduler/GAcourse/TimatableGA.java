@@ -1,9 +1,22 @@
 package com.github.rayinfinite.scheduler.GAcourse;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class TimatableGA {
 	public static  int maxGenerations = 1000;
+
+	public static Date convertToDate(String dateString) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/M/d");  // 设置日期格式
+		try {
+			return sdf.parse(dateString);  // 返回 Date 对象
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	private static Timetable initializeTimetable() {
 		Timetable timetable = new Timetable();
@@ -24,21 +37,21 @@ public class TimatableGA {
 		timetable.addRoom(14, "F17", 25);
 		timetable.addRoom(15, "F18", 25);
 
-		timetable.addTimeslot(1, "2022/2/7 9:00 - 17:00");
-		timetable.addTimeslot(2, "2022/2/8 9:00 - 17:00");
-		timetable.addTimeslot(3, "2022/2/9 9:00 - 17:00");
-		timetable.addTimeslot(4, "2022/2/10 9:00 - 17:00");
-		timetable.addTimeslot(5, "2022/2/11 9:00 - 17:00");
-		timetable.addTimeslot(6, "2022/2/12 9:00 - 17:00");
-		timetable.addTimeslot(7, "2022/2/13 9:00 - 17:00");
-		timetable.addTimeslot(8, "2022/2/14 9:00 - 17:00");
-		timetable.addTimeslot(9, "2022/2/15 9:00 - 17:00");
-		timetable.addTimeslot(10, "2022/2/16 9:00 - 17:00");
-		timetable.addTimeslot(11, "2022/2/17 9:00 - 17:00");
-		timetable.addTimeslot(12, "2022/2/18 9:00 - 17:00");
-		timetable.addTimeslot(13, "2022/2/19 9:00 - 17:00");
-		timetable.addTimeslot(14, "2022/2/20 9:00 - 17:00");
-		timetable.addTimeslot(15, "2022/2/21 9:00 - 17:00");
+		timetable.addTimeslot(1, convertToDate("2022/2/7"));
+		timetable.addTimeslot(2, convertToDate("2022/2/8"));
+		timetable.addTimeslot(3, convertToDate("2022/2/9"));
+		timetable.addTimeslot(4, convertToDate("2022/2/10"));
+		timetable.addTimeslot(5, convertToDate("2022/2/11"));
+		timetable.addTimeslot(6, convertToDate("2022/2/12"));
+		timetable.addTimeslot(7, convertToDate("2022/2/13"));
+		timetable.addTimeslot(8, convertToDate("2022/2/14"));
+		timetable.addTimeslot(9, convertToDate("2022/2/15"));
+		timetable.addTimeslot(10, convertToDate("2022/2/16"));
+		timetable.addTimeslot(11, convertToDate("2022/2/17"));
+		timetable.addTimeslot(12, convertToDate("2022/2/18"));
+		timetable.addTimeslot(13, convertToDate("2022/2/19"));
+		timetable.addTimeslot(14, convertToDate("2022/2/20"));
+		timetable.addTimeslot(15, convertToDate("2022/2/21"));
 
 		timetable.addProfessor(-1, " - ");
 		timetable.addProfessor(1, "Lecturer1");

@@ -1,10 +1,12 @@
 package com.github.rayinfinite.scheduler.GAcourse;
 
+import java.util.Date;
+
 public class Timeslot {
     private final int timeslotId;
-    private final String timeslot;
+    private final Date timeslot;
 
-    public Timeslot(int timeslotId, String timeslot) {
+    public Timeslot(int timeslotId, Date timeslot) {
         this.timeslot = timeslot;
         this.timeslotId = timeslotId;
     }
@@ -13,7 +15,7 @@ public class Timeslot {
         return this.timeslotId;
     }
 
-    public String getTimeslot() {
+    public Date getTimeslot() {
         return this.timeslot;
     }
 }

@@ -62,7 +62,7 @@ public class Timetable {
         this.plansNum = 0;
     }
 
-    public void addTimeslot(int timeslotId, String timeslot) {
+    public void addTimeslot(int timeslotId, Date timeslot) {
         this.timeslots.put(timeslotId, new Timeslot(timeslotId, timeslot));
     }
 
