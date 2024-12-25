@@ -47,17 +47,29 @@ public class GAService {
         Map<String,Integer> teacherMap = new HashMap<>();
         for (InputData data : inputDataList) {
             List<Integer> teachers = new ArrayList<>();
-            if (data.getTeacher1() != null && !data.getTeacher1().isEmpty() && !teacherMap.containsKey(data.getTeacher1())) {
-                teachers.add(i);
-                teacherMap.put(data.getTeacher1(),i++);
+            if (data.getTeacher1() != null && !data.getTeacher1().isEmpty() ) {
+                if(teacherMap.containsKey(data.getTeacher1())){
+                    teachers.add(teacherMap.get(data.getTeacher1()));
+                }else{
+                    teachers.add(i);
+                    teacherMap.put(data.getTeacher1(),i++);
+                }
             }
-            if (data.getTeacher2() != null && !data.getTeacher2().isEmpty() && !teacherMap.containsKey(data.getTeacher2())) {
-                teachers.add(i);
-                teacherMap.put(data.getTeacher2(),i++);
+            if (data.getTeacher2() != null && !data.getTeacher2().isEmpty() ) {
+                if(teacherMap.containsKey(data.getTeacher2())){
+                    teachers.add(teacherMap.get(data.getTeacher2()));
+                }else{
+                    teachers.add(i);
+                    teacherMap.put(data.getTeacher2(),i++);
+                }
             }
-            if (data.getTeacher3() != null && !data.getTeacher3().isEmpty() && !teacherMap.containsKey(data.getTeacher3())) {
-                teachers.add(i);
-                teacherMap.put(data.getTeacher3(),i++);
+            if (data.getTeacher3() != null && !data.getTeacher3().isEmpty() ) {
+                if(teacherMap.containsKey(data.getTeacher3())){
+                    teachers.add(teacherMap.get(data.getTeacher3()));
+                }else{
+                    teachers.add(i);
+                    teacherMap.put(data.getTeacher3(),i++);
+                }
             }
             data.setTeacherIds(teachers.stream().mapToInt(Integer::intValue).toArray());
         }
