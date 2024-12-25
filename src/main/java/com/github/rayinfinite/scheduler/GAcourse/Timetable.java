@@ -1,5 +1,8 @@
 package com.github.rayinfinite.scheduler.GAcourse;
 
+import com.github.rayinfinite.scheduler.entity.Cohort;
+import com.github.rayinfinite.scheduler.entity.Timeslot;
+
 import java.util.*;
 
 public class Timetable {

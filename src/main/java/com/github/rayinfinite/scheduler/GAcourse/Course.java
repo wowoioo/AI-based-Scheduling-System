@@ -1,17 +1,17 @@
 package com.github.rayinfinite.scheduler.GAcourse;
 
 public class Course {
-    private final int courseId;
-    private final String practiceArea;
-    private final String courseCode;
-    private final String course;
-    private final int professorIds[];
-    private final String software;
-    private final String courseManager;
-    private final String gradCert;
-    private final int professorNum;
-    private final int duration;
-    private final String run;
+    private int courseId;
+    private String practiceArea;
+    private String courseCode;
+    private String course;
+    private int professorIds[];
+    private String software;
+    private String courseManager;
+    private String gradCert;
+    private int professorNum;
+    private int duration;
+    private String run;
 
     public Course(int courseId, String practiceArea, String courseCode, String course, int professorIds[], String software, String courseManager, String gradCert, int professorNum, int duration, String run) {
         this.courseId = courseId;

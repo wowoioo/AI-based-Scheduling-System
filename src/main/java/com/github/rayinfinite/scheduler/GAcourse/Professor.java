@@ -1,8 +1,8 @@
 package com.github.rayinfinite.scheduler.GAcourse;
 
 public class Professor {
-    private final int professorId;
-    private final String professorName;
+    private int professorId;
+    private String professorName;
 //    private String unavailableDate;
 
     public Professor(int professorId, String professorName) {

@@ -1,5 +1,7 @@
 package com.github.rayinfinite.scheduler.GAcourse;
 
+import com.github.rayinfinite.scheduler.entity.Cohort;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

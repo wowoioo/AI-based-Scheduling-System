@@ -18,6 +18,6 @@ public class Classroom implements Serializable {
     private Long id;
 
     private String name;
-    private Integer classSize;
+    private Integer size;
     private String software;
 }
