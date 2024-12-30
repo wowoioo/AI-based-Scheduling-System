@@ -1,5 +1,7 @@
 package com.github.rayinfinite.scheduler.GAcourse;
 
+import com.github.rayinfinite.scheduler.GAcourse.config.Population;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,7 +36,7 @@ public class TimetableOutput {
                     "courseName='" + courseName + '\'' +
                     ", software='" + software + '\'' +
                     ", cohort='" + cohort + '\'' +
-                    ", roomNumber='" + roomNumber + '\'' +
+                    ", Room Name='" + roomNumber + '\'' +
                     ", professors=" + professors +
                     ", time='" + time + '\'' +
                     ", courseManager='" + courseManager + '\'' +

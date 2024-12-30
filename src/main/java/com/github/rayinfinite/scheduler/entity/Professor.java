@@ -1,4 +1,4 @@
-package com.github.rayinfinite.scheduler.GAcourse;
+package com.github.rayinfinite.scheduler.entity;
 
 public class Professor {
     private int professorId;

@@ -1,43 +1,47 @@
 package com.github.rayinfinite.scheduler.GAcourse;
 
+import com.github.rayinfinite.scheduler.GAcourse.config.Individual;
+import com.github.rayinfinite.scheduler.entity.Professor;
+import com.github.rayinfinite.scheduler.entity.Classroom;
 import com.github.rayinfinite.scheduler.entity.Cohort;
 import com.github.rayinfinite.scheduler.entity.Timeslot;
 
 import java.util.*;
 
 public class Timetable {
-    private final HashMap<Integer, Room> rooms;
-    private final HashMap<Integer, Professor> professors;
-    private final HashMap<Integer, Course> courses;
+    private final HashMap<Integer, Classroom> rooms;
+    private final HashMap<Integer, InputData> courses;
     private final HashMap<Integer, Cohort> cohorts;
     private final HashMap<Integer, Timeslot> timeslots;
+    private final HashMap<Integer, Professor> professors;
+
     private TeachingPlan plans[];
 
     private int plansNum = 0;
 
     public Timetable() {
-        this.rooms = new HashMap<Integer, Room>();
-        this.professors = new HashMap<Integer, Professor>();
-        this.courses = new HashMap<Integer, Course>();
-        this.cohorts = new HashMap<Integer, Cohort>();
-        this.timeslots = new HashMap<Integer, Timeslot>();
+        this.rooms = new HashMap<>();
+        this.courses = new HashMap<>();
+        this.cohorts = new HashMap<>();
+        this.timeslots = new HashMap<>();
+        this.professors = new HashMap<>();
     }
 
     //浅拷贝，用于适应度计算
     public Timetable(Timetable cloneable) {
         this.rooms = cloneable.getRooms();
-        this.professors = cloneable.getProfessors();
         this.courses = cloneable.getCourses();
         this.cohorts = cloneable.getCohorts();
         this.timeslots = cloneable.getTimeslots();
+        this.professors = cloneable.getProfessors();
+    }
+
+    public HashMap<Integer, InputData> getCourses() {
+        return this.courses;
     }
 
     public HashMap<Integer, Professor> getProfessors() {
-        return this.professors;
-    }
-
-    public HashMap<Integer, Course> getCourses() {
-        return this.courses;
+        return professors;
     }
 
     public HashMap<Integer, Cohort> getCohorts() {
@@ -49,15 +53,15 @@ public class Timetable {
     }
 
     public void addRoom(int roomId, String roomName, int capacity) {
-        this.rooms.put(roomId, new Room(roomId, roomName, capacity));
+        this.rooms.put(roomId, new Classroom(roomId, roomName, capacity));
     }
 
     public void addProfessor(int professorId, String professorName) {
         this.professors.put(professorId, new Professor(professorId, professorName));
     }
 
-    public void addCourse(int courseId, String practiceArea, String courseCode, String course, int professorIds[], String software, String courseManager, String gradCert, int professorNum, int duration, String run) {
-        this.courses.put(courseId, new Course(courseId, practiceArea, courseCode, course, professorIds, software, courseManager, gradCert, professorNum, duration, run));
+    public void addCourse(InputData inputData) {
+        this.courses.put(inputData.getCourseId(), inputData);
     }
 
     public void addCohort(int cohortId, String cohort, int cohortSize,int typeId, String cohortType, int courseIds[]) {
@@ -74,7 +78,7 @@ public class Timetable {
         for (Cohort cohort : this.getCohortsAsArray()) {
             int courseIds[] = cohort.getCourseIds();
             for (int courseId : courseIds) {
-                Course course = this.getCourse(courseId);
+                InputData course = this.getCourse(courseId);
                 totalPlans += course.getDuration();  // 还没有加run#，后面也要加在这
             }
         }
@@ -88,7 +92,7 @@ public class Timetable {
         for (Cohort cohort : this.getCohortsAsArray()) {
             int courseIds[] = cohort.getCourseIds();
             for (int courseId : courseIds) {
-                Course course = this.getCourse(courseId);
+                InputData course = this.getCourse(courseId);
                 int duration = course.getDuration(); // 获取课程持续时间
 
                 for (int dayOffset = 0; dayOffset < duration; dayOffset++) {
@@ -125,33 +129,6 @@ public class Timetable {
             }
         }
         this.plans = plans;
-//        TeachingPlan plans[] = new TeachingPlan[this.getPlansNum()];
-//
-//        int chromosome[] = individual.getChromosome();
-//        int chromosomePos = 0;
-//        int planIndex = 0;
-//
-//        for (Cohort cohort : this.getCohortsAsArray()) {
-//            int courseIds[] = cohort.getCourseIds();
-//            for (int courseId : courseIds) {
-//                plans[planIndex] = new TeachingPlan(planIndex, cohort.getCohortId(), courseId);
-//                plans[planIndex].addTimeslot(chromosome[chromosomePos]);
-//                chromosomePos++;
-//
-//                plans[planIndex].setRoomId(chromosome[chromosomePos]);
-//                chromosomePos++;
-//
-//                int professor1 = chromosome[chromosomePos++];
-//                int professor2 = chromosome[chromosomePos++];
-//                int professor3 = chromosome[chromosomePos++];
-//
-//                plans[planIndex].addProfessor1(professor1);
-//                plans[planIndex].addProfessor2(professor2);
-//                plans[planIndex].addProfessor3(professor3);
-//                planIndex++;
-//            }
-//        }
-//        this.plans = plans;
     }
 
     public int getMaxTimeslotId() {
@@ -162,33 +139,33 @@ public class Timetable {
         return Collections.max(timeslotIds);
     }
 
-    public Room getRoom(int roomId) {
+    public Classroom getRoom(int roomId) {
         if (!this.rooms.containsKey(roomId)) {
             System.out.println("Rooms doesn't contain key " + roomId);
         }
-        return (Room) this.rooms.get(roomId);
+        return this.rooms.get(roomId);
     }
 
-    public HashMap<Integer, Room> getRooms() {
+    public HashMap<Integer, Classroom> getRooms() {
         return this.rooms;
     }
 
-    public Room getRandomRoom() {
+    public Classroom getRandomRoom() {
         Object[] roomsArray = this.rooms.values().toArray( );
-        Room room = (Room) roomsArray[(int) (roomsArray.length * Math.random())];
+        Classroom room = (Classroom) roomsArray[(int) (roomsArray.length * Math.random())];
         return room;
     }
 
-    public Professor getProfessor(int professorId) {
-        return (Professor) this.professors.get(professorId);
+    public InputData getCourse(int courseId) {
+        return this.courses.get(courseId);
     }
 
-    public Course getCourse(int courseId) {
-        return (Course) this.courses.get(courseId);
+    public Professor getProfessor(int professorId) {
+        return this.professors.get(professorId);
     }
 
     public int[] getCohortCourses(int cohortId) {
-        Cohort cohort = (Cohort) this.cohorts.get(cohortId);
+        Cohort cohort = this.cohorts.get(cohortId);
         return cohort.getCourseIds();
     }
 
@@ -197,7 +174,7 @@ public class Timetable {
     }
 
     public Cohort[] getCohortsAsArray() {
-        return (Cohort[]) this.cohorts.values().toArray(new Cohort[this.cohorts.size()]);
+        return this.cohorts.values().toArray(new Cohort[this.cohorts.size()]);
     }
 
     public Timeslot getTimeslot(int timeslotId) {

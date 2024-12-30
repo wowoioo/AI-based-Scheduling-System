@@ -27,7 +27,7 @@ public class InputData {
     Integer duration;
     String software;
     String cohort;
-    String run;
+    Integer run;
     @ExcelIgnore
     Date courseDate;
     @ExcelIgnore

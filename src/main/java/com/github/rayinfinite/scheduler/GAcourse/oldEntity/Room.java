@@ -1,4 +1,4 @@
-package com.github.rayinfinite.scheduler.GAcourse;
+package com.github.rayinfinite.scheduler.GAcourse.oldEntity;
 
 public class Room {
     private final int roomId;

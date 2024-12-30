@@ -1,4 +1,7 @@
-package com.github.rayinfinite.scheduler.GAcourse;
+package com.github.rayinfinite.scheduler.GAcourse.config;
+
+import com.github.rayinfinite.scheduler.GAcourse.Timetable;
+import com.github.rayinfinite.scheduler.GAcourse.config.Individual;
 
 import java.util.Arrays;
 import java.util.Comparator;

@@ -15,9 +15,31 @@ import java.io.Serializable;
 public class Classroom implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String name;
     private Integer size;
-    private String software;
+
+    public Classroom(int roomId, String roomNumber, int capacity) {
+        this.id = roomId;
+        this.name = roomNumber;
+        this.size = capacity;
+    }
+
+    public Classroom() {
+        
+    }
+
+
+    public int getRoomId() {
+        return this.id;
+    }
+
+    public String getRoomNumber() {
+        return this.name;
+    }
+
+    public int getRoomCapacity() {
+        return this.size;
+    }
 }

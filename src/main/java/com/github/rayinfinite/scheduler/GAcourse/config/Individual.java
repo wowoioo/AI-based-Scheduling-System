@@ -1,5 +1,7 @@
-package com.github.rayinfinite.scheduler.GAcourse;
+package com.github.rayinfinite.scheduler.GAcourse.config;
 
+import com.github.rayinfinite.scheduler.GAcourse.InputData;
+import com.github.rayinfinite.scheduler.GAcourse.Timetable;
 import com.github.rayinfinite.scheduler.entity.Cohort;
 
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ public class Individual {
 		int plansNum = timetable.getPlansNum();
 		int chromosomeLength = plansNum * 5;
 
-		for (Course course : timetable.getCourses().values()) {
+		for (InputData course : timetable.getCourses().values()) {
 			int duration = course.getDuration();
 			chromosomeLength += (duration - 1) * 5;
 		}
@@ -48,9 +50,9 @@ public class Individual {
 				newChromosome[chromosomeIndex] = roomId;
 				chromosomeIndex++;
 
-				Course course = timetable.getCourse(courseId);
+				InputData course = timetable.getCourse(courseId);
 				int professorNum = course.getProfessorNum();
-				int[] professorIds = course.getProfessorIds();
+				int[] professorIds = course.getTeacherIds();
 
 				professorNum = Math.min(professorNum, professorIds.length);
 

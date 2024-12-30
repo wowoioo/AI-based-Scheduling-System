@@ -1,4 +1,8 @@
-package com.github.rayinfinite.scheduler.GAcourse;
+package com.github.rayinfinite.scheduler.GAcourse.config;
+
+import com.github.rayinfinite.scheduler.GAcourse.Timetable;
+import com.github.rayinfinite.scheduler.GAcourse.config.Individual;
+import com.github.rayinfinite.scheduler.GAcourse.config.Population;
 
 import java.util.Random;
 

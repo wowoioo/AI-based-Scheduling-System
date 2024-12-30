@@ -1,6 +1,6 @@
 package com.github.rayinfinite.scheduler.service;
 
-import com.github.rayinfinite.scheduler.GAcourse.Professor;
+import com.github.rayinfinite.scheduler.entity.Professor;
 import com.github.rayinfinite.scheduler.entity.Classroom;
 import com.github.rayinfinite.scheduler.entity.Cohort;
 import com.github.rayinfinite.scheduler.entity.InputData;

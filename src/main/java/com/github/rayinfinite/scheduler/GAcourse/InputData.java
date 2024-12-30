@@ -1,30 +1,32 @@
 package com.github.rayinfinite.scheduler.GAcourse;
 
-public class Course {
+public class InputData {
     private int courseId;
     private String practiceArea;
+    private String courseName;
     private String courseCode;
-    private String course;
-    private int professorIds[];
+    private int duration;
+    private int cohortId;
     private String software;
+    private Integer run;
     private String courseManager;
     private String gradCert;
     private int professorNum;
-    private int duration;
-    private String run;
+    private int teacherIds[];
 
-    public Course(int courseId, String practiceArea, String courseCode, String course, int professorIds[], String software, String courseManager, String gradCert, int professorNum, int duration, String run) {
+    public InputData(int courseId, String practiceArea, String courseName, String courseCode, int duration, int cohortId, String software, int run, String courseManager, String gradCert, int teacherIds[], int professorNum) {
         this.courseId = courseId;
         this.practiceArea = practiceArea;
         this.courseCode = courseCode;
-        this.course = course;
-        this.professorIds = professorIds;
+        this.courseName = courseName;
+        this.teacherIds = teacherIds;
         this.software = software;
         this.courseManager = courseManager;
         this.gradCert = gradCert;
         this.professorNum = professorNum;
         this.duration = duration;
         this.run = run;
+        this.cohortId = cohortId;
     }
 
     public int getCourseId() {
@@ -35,16 +37,20 @@ public class Course {
         return this.practiceArea;
     }
 
+    public String getCourseName() {
+        return this.courseName;
+    }
+
     public String getCourseCode() {
         return this.courseCode;
     }
 
-    public String getCourseName() {
-        return this.course;
-    }
-
     public String getSoftware() {
         return this.software;
+    }
+
+    public int getCohort() {
+        return this.cohortId;
     }
 
     public String getCourseManager() {
@@ -63,12 +69,12 @@ public class Course {
         return this.duration;
     }
 
-    public int[] getProfessorIds() {
-        return this.professorIds;
+    public Integer getRun() {
+        return this.run;
     }
 
-//    public int getRandomProfessorId() {
-//        int professorId = professorIds[(int) (professorIds.length * Math.random())];
-//        return professorId;
-//    }
+    public int[] getTeacherIds() {
+        return this.teacherIds;
+    }
+
 }
