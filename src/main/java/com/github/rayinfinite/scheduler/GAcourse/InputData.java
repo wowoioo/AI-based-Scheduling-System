@@ -49,7 +49,7 @@ public class InputData {
         return this.software;
     }
 
-    public int getCohort() {
+    public int getCohortId() {
         return this.cohortId;
     }
 
