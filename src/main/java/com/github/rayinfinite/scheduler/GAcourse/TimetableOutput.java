@@ -10,6 +10,7 @@ import java.util.List;
 public class TimetableOutput {
 
     public static class InputData {
+        private int id;
         private String courseName;
         private String software;
         private String cohort;
@@ -42,6 +43,10 @@ public class TimetableOutput {
                     ", courseManager='" + courseManager + '\'' +
                     ", gradCert='" + gradCert + '\'' +
                     '}';
+        }
+
+        public Integer getId() {
+            return this.id;
         }
     }
 

@@ -23,12 +23,11 @@ public class Cohort {
     @ExcelIgnore
     private int[] courseIds;
 
-    public Cohort(int cohortId, String cohort, int cohortSize, int typeId, String cohortType, int[] courseIds) {
+    public Cohort(int cohortId, String cohort, int cohortSize, int typeId, String cohortType) {
         this.cohortId = cohortId;
         this.cohort = cohort;
         this.cohortSize = cohortSize;
         this.typeId = typeId;
         this.cohortType = cohortType;
-        this.courseIds = courseIds;
     }
 }

@@ -5,6 +5,7 @@ import com.github.rayinfinite.scheduler.entity.Professor;
 import com.github.rayinfinite.scheduler.entity.Classroom;
 import com.github.rayinfinite.scheduler.entity.Cohort;
 import com.github.rayinfinite.scheduler.entity.Timeslot;
+import com.github.rayinfinite.scheduler.entity.InputData;
 
 import java.util.*;
 
@@ -64,8 +65,8 @@ public class Timetable {
         this.courses.put(inputData.getCourseId(), inputData);
     }
 
-    public void addCohort(int cohortId, String cohort, int cohortSize,int typeId, String cohortType, int courseIds[]) {
-        this.cohorts.put(cohortId, new Cohort(cohortId, cohort, cohortSize, typeId, cohortType, courseIds));
+    public void addCohort(int cohortId, String cohort, int cohortSize,int typeId, String cohortType) {
+        this.cohorts.put(cohortId, new Cohort(cohortId, cohort, cohortSize, typeId, cohortType));
         this.plansNum = 0;
     }
 
@@ -253,20 +254,21 @@ public class Timetable {
         return this.plans;
     }
 
-    public int getPlansNum() {
-        if (this.plansNum > 0){
-            return this.plansNum;
-        }
-
-        int plansNum = 0;
-        Cohort cohorts[] = (Cohort[]) this.cohorts.values().toArray(new Cohort[this.cohorts.size()]);
-
-        for (Cohort cohort : cohorts) {
-            plansNum += cohort.getCourseIds().length;
-        }
-        this.plansNum = plansNum;
-
-        return this.plansNum;
+    public int getPlansNum(Timetable timetable) {
+//        if (this.plansNum > 0){
+//            return this.plansNum;
+//        }
+//
+//        int plansNum = 0;
+//        Cohort cohorts[] = (Cohort[]) this.cohorts.values().toArray(new Cohort[this.cohorts.size()]);
+//
+//        for (Cohort cohort : cohorts) {
+//            plansNum += cohort.getCourseIds().length;
+//        }
+//        this.plansNum = plansNum;
+//
+//        return this.plansNum;
+        return timetable.getCourses().size();
     }
 
     public int calcClashes() {
