@@ -5,7 +5,7 @@ import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.github.rayinfinite.scheduler.entity.Classroom;
 import com.github.rayinfinite.scheduler.entity.Cohort;
-import com.github.rayinfinite.scheduler.entity.InputData;
+import com.github.rayinfinite.scheduler.entity.Course;
 import com.github.rayinfinite.scheduler.entity.Timeslot;
 import com.github.rayinfinite.scheduler.excel.BaseExcelReader;
 import com.github.rayinfinite.scheduler.repository.ClassroomRepository;
@@ -13,7 +13,6 @@ import com.github.rayinfinite.scheduler.repository.InputDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -39,12 +38,12 @@ public class AppService {
     public String upload(MultipartFile file) throws IOException {
         lock.lock();
         log.info("Uploading file: {}", file.getOriginalFilename());
-        BaseExcelReader<InputData> courseReader = new BaseExcelReader<>();
+        BaseExcelReader<Course> courseReader = new BaseExcelReader<>();
         BaseExcelReader<Cohort> cohortReader = new BaseExcelReader<>();
         BaseExcelReader<Timeslot> timeReader = new BaseExcelReader<>();
         try (ExcelReader excelReader = EasyExcel.read(file.getInputStream()).build()) {
             ReadSheet courseSheet =
-                    EasyExcel.readSheet(0).head(InputData.class).registerReadListener(courseReader).build();
+                    EasyExcel.readSheet(0).head(Course.class).registerReadListener(courseReader).build();
             ReadSheet cohortSheet =
                     EasyExcel.readSheet(1).head(Cohort.class).registerReadListener(cohortReader).build();
             ReadSheet timeSheet = EasyExcel.readSheet(2).head(Timeslot.class).registerReadListener(timeReader).build();
@@ -52,25 +51,25 @@ public class AppService {
         }
         lock.unlock();
 
-        Thread.ofVirtual().start(() -> {
-            jgap(courseReader.getDataList(), cohortReader.getDataList(), timeReader.getDataList());
-        });
+        Thread.ofVirtual().start(() -> jgap(courseReader.getDataList(), cohortReader.getDataList(),
+                timeReader.getDataList()));
         return "success";
     }
 
-    public void jgap(List<InputData> inputDataList, List<Cohort> cohortList, List<Timeslot> timeslotList) {
-        var result = gaService.jgap(inputDataList, cohortList, timeslotList, getAllClassrooms());
-        for (InputData data : result) {
-            log.info(data.toString());
-        }
+    public void jgap(List<Course> courseList, List<Cohort> cohortList, List<Timeslot> timeslotList) {
+        var result = gaService.jgap(courseList, cohortList, timeslotList, getAllClassrooms());
+//        for (InputData data : result) {
+//            log.info(data.toString());
+//        }
         inputDataRepository.deleteAll();
         inputDataRepository.saveAll(result);
+        log.info("{} Data saved to database", result.size());
     }
 
-    public List<InputData> findByCourseDateBetween(String startDate, String endDate, List<String> teachers) throws ParseException {
+    public List<Course> findByCourseDateBetween(String startDate, String endDate, List<String> teachers) throws ParseException {
         Date start = formatter.parse(startDate);
         Date end = formatter.parse(endDate);
-        List<InputData> data = inputDataRepository.findByCourseDateBetween(start, end);
+        List<Course> data = inputDataRepository.findByCourseDateBetween(start, end);
         if (teachers != null && !teachers.isEmpty()) {
             data.removeIf(inputData -> !teachers.contains(inputData.getTeacher1())
                     && !teachers.contains(inputData.getTeacher2())

@@ -4,7 +4,9 @@ import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.github.rayinfinite.scheduler.excel.DateConverter;
 import com.github.rayinfinite.scheduler.excel.IntegerConverter;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -15,9 +17,8 @@ import java.util.Date;
 @Entity
 @ToString
 @NoArgsConstructor
-public class InputData {
+public class Course {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ExcelIgnore
 //    @Setter
     Integer id;
@@ -54,35 +55,4 @@ public class InputData {
     @ExcelIgnore
     @Transient
     int[] teacherIds;
-
-    public InputData(Integer courseId, String practiceArea, String courseName, String courseCode, Integer duration, int cohortId, String software, int run, String courseManager, String gradCert, int teacherIds[], int professorNum) {
-        this.id = courseId;
-        this.practiceArea = practiceArea;
-        this.courseCode = courseCode;
-        this.courseName = courseName;
-        this.teacherIds = teacherIds;
-        this.software = software;
-        this.manager = courseManager;
-        this.cert = gradCert;
-        this.professorNum = professorNum;
-        this.duration = duration;
-        this.run = run;
-        this.cohortId = cohortId;
-    }
-
-    public int getCourseId() {
-        return this.id;
-    }
-
-    public String getCourseManager() {
-        return this.manager;
-    }
-
-    public String getGradCert() {
-        return this.cert;
-    }
-
-//    public int getProfessorNum() {
-//        return professorNum != null ? professorNum : 1;
-//    }
 }

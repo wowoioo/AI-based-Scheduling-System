@@ -1,7 +1,5 @@
 package com.github.rayinfinite.scheduler.entity;
 
-import java.util.Date;
-
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.github.rayinfinite.scheduler.excel.DateConverter;
@@ -10,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -20,5 +20,5 @@ public class Timeslot {
     @ExcelIgnore
     private int timeslotId;
     @ExcelProperty(converter = DateConverter.class)
-    private Date timeslot;
+    private Date date;
 }

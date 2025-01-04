@@ -1,5 +1,9 @@
-package com.github.rayinfinite.scheduler.GAcourse;
+package com.github.rayinfinite.scheduler.ga_course;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
 public class TeachingPlan {
     private final int planId;
     private final int cohortId;
@@ -8,6 +12,7 @@ public class TeachingPlan {
     private int professor2Id;
     private int professor3Id;
     private int timeslotId;
+    @Setter
     private int roomId;
 
     public TeachingPlan(int planId, int cohortId, int courseId) {
@@ -30,43 +35,5 @@ public class TeachingPlan {
 
     public void addTimeslot(int timeslotId) {
         this.timeslotId = timeslotId;
-    }
-
-    public void setRoomId(int roomId) {
-        this.roomId = roomId;
-    }
-
-    public int getPlanId() {
-        return this.planId;
-    }
-
-    public int getCohortId() {
-        return this.cohortId;
-    }
-
-    public int getCourseId() {
-        return this.courseId;
-    }
-
-    public int getProfessor1Id() {
-        return this.professor1Id;
-    }
-
-    public int getProfessor2Id() {
-        return this.professor2Id;
-    }
-
-
-    public int getProfessor3Id() {
-        return this.professor3Id;
-    }
-
-
-    public int getTimeslotId() {
-        return this.timeslotId;
-    }
-
-    public int getRoomId() {
-        return this.roomId;
     }
 }

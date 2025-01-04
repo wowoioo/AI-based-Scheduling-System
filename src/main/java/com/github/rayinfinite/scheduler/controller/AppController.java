@@ -1,7 +1,7 @@
 package com.github.rayinfinite.scheduler.controller;
 
 import com.github.rayinfinite.scheduler.entity.Classroom;
-import com.github.rayinfinite.scheduler.entity.InputData;
+import com.github.rayinfinite.scheduler.entity.Course;
 import com.github.rayinfinite.scheduler.entity.Response;
 import com.github.rayinfinite.scheduler.service.AppService;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class AppController {
     @GetMapping("/data")
     public Response getData(String startStr, String endStr,
                             @RequestParam(required = false) List<String> teachers) throws ParseException {
-        List<InputData> data = service.findByCourseDateBetween(startStr, endStr, teachers);
+        List<Course> data = service.findByCourseDateBetween(startStr, endStr, teachers);
         return new Response(data);
     }
 
@@ -56,10 +56,4 @@ public class AppController {
         var result = service.deleteClassroom(classroomId);
         return new Response(result);
     }
-
-//    @GetMapping("/schedule")
-//    public Response getSchedule() {
-//        service.gjap();
-//        return new Response("success");
-//    }
 }

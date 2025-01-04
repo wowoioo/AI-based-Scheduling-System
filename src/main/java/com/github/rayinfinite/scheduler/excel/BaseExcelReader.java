@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@Getter
 @Slf4j
 @RequiredArgsConstructor
 public class BaseExcelReader<T> implements ReadListener<T> {
-    @Getter
-    private final List<T> dataList = new ArrayList<>(1100);
+    private final List<T> dataList = new ArrayList<>(1000);
 
     @Override
     public void invoke(T data, AnalysisContext context) {
