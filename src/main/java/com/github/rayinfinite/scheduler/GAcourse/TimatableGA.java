@@ -6,8 +6,10 @@ import com.github.rayinfinite.scheduler.entity.InputData;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class TimatableGA {
 	public static  int maxGenerations = 1000;
@@ -111,12 +113,81 @@ public class TimatableGA {
 			generation++;
 		}
 
-		TimetableOutput timetableOutput = new TimetableOutput();
-		List<TimetableOutput.InputData> timetableList = timetableOutput.generateTimetableList(timetable, population, generation);
+		timetable.createPlans(population.getFittest(0));
+		System.out.println("Solution found in " + generation + " generations");
+		System.out.println("Final solution fitness: " + population.getFittest(0).getFitness());
+		System.out.println("Clashes: " + timetable.calcClashes());
 
-        // 打印列表
-		for (TimetableOutput.InputData data : timetableList) {
-			System.out.println(data);
+		List<InputData> inputDataList = new ArrayList<>();
+		TeachingPlan[] plans = timetable.getPlans();
+
+		// 生成 List<InputData>
+		for (TeachingPlan bestPlan : plans) {
+			int courseId = bestPlan.getCourseId();
+			String practiceArea = timetable.getCourse(courseId).getPracticeArea();
+			String courseName = timetable.getCourse(courseId).getCourseName();
+			String courseCode = timetable.getCourse(courseId).getCourseCode();
+			int duration = timetable.getCourse(courseId).getDuration();
+			int cohortId = bestPlan.getCohortId();
+			String software = timetable.getCourse(courseId).getSoftware();
+			int run = timetable.getCourse(courseId).getRun();
+			String courseManager = timetable.getCourse(courseId).getCourseManager();
+			String gradCert = timetable.getCourse(courseId).getGradCert();
+			String cohort = timetable.getCohort(cohortId).getCohort();
+			String classroom = timetable.getRoom(bestPlan.getRoomId()).getRoomNumber();
+
+			// 获取时间信息
+			Date timeslotDate = timetable.getTimeslot(bestPlan.getTimeslotId()).getTimeslot();
+			String time = TimetableOutput.convertDateToString(timeslotDate);
+			// 获取教师 ID 列表
+			int professorNum = timetable.getCourse(courseId).getProfessorNum();
+
+			int[] teacherIds = new int[professorNum];
+			teacherIds[0] = bestPlan.getProfessor1Id();
+			if (professorNum > 1) {
+				teacherIds[1] = bestPlan.getProfessor2Id();
+			}
+			if (professorNum > 2) {
+				teacherIds[2] = bestPlan.getProfessor3Id();
+			}
+
+			// 获取教师名称
+			String teacher1 = teacherIds.length > 0 && teacherIds[0] != -1
+					? timetable.getProfessor(teacherIds[0]).getProfessorName()
+					: null;
+			String teacher2 = teacherIds.length > 1 && teacherIds[1] != -1
+					? timetable.getProfessor(teacherIds[1]).getProfessorName()
+					: null;
+			String teacher3 = teacherIds.length > 2 && teacherIds[2] != -1
+					? timetable.getProfessor(teacherIds[2]).getProfessorName()
+					: null;
+
+			// 构建 InputData 对象
+			InputData inputData = new InputData(
+					courseId, practiceArea, courseName, courseCode, duration, cohortId,
+					software, run, courseManager, gradCert, teacherIds, professorNum
+			);
+
+			// 设置教师名称
+			inputData.setTeacher1(teacher1);
+			inputData.setTeacher2(teacher2);
+			inputData.setTeacher3(teacher3);
+			inputData.setClassroom(classroom);
+			inputData.setCourseDate(timeslotDate);
+//			inputData.setWeek(time);
+			inputDataList.add(inputData);
+			inputData.setCohort(cohort);
 		}
+
+		// 打印所有 InputData
+		IntStream.range(0, inputDataList.size()).forEach(i -> inputDataList.get(i).setId(i + 1));
+		inputDataList.forEach(System.out::println);
 	}
+
+	// 转换日期为字符串
+	private static String convertDateToString(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		return sdf.format(date);
+	}
+
 }

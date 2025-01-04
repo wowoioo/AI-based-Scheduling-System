@@ -139,6 +139,9 @@ public class Timetable {
         for (InputData course : this.courses.values()) {
             totalPlans += course.getDuration();
         }
+//        for (InputData course : this.courses.values()) {
+//            totalPlans += course.getRun();
+//        }
         TeachingPlan plans[] = new TeachingPlan[totalPlans];
 
         int chromosome[] = individual.getChromosome();

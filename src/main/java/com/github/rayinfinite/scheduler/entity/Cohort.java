@@ -1,6 +1,7 @@
 package com.github.rayinfinite.scheduler.entity;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +13,16 @@ import lombok.Setter;
 public class Cohort {
     @Id
     @ExcelIgnore
+    @ExcelProperty("Cohort ID")
     private int cohortId;
 
+    @ExcelProperty("Cohort Size")
     private int cohortSize;
+
+    @ExcelProperty("Cohort Type")
     private String cohortType;
+
+    @ExcelProperty("Cohort")
     private String cohort;
 
     @ExcelIgnore

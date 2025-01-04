@@ -1,7 +1,14 @@
 package com.github.rayinfinite.scheduler.entity;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
+
 public class Professor {
+    @ExcelIgnore
+    @ExcelProperty("Professor ID")
     private int professorId;
+
+    @ExcelProperty("Professor Name")
     private String professorName;
 //    private String unavailableDate;
 

@@ -33,8 +33,11 @@ public class Individual {
 		int chromosomeLength = plansNum * 5;
 
 		for (InputData course : timetable.getCourses().values()) {
+			int run = course.getRun();
 			int duration = course.getDuration();
-			chromosomeLength += (duration - 1) * 5;
+			int length1 = (duration - 1) * 5;
+			chromosomeLength += length1 * 5;
+//			chromosomeLength += (run - 1) * length1;
 		}
 
 		int newChromosome[] = new int[chromosomeLength];

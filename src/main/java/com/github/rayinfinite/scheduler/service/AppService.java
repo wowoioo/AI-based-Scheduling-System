@@ -13,6 +13,7 @@ import com.github.rayinfinite.scheduler.repository.InputDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -50,6 +51,7 @@ public class AppService {
             excelReader.read(courseSheet, cohortSheet, timeSheet);
         }
         lock.unlock();
+
         Thread.ofVirtual().start(() -> {
             jgap(courseReader.getDataList(), cohortReader.getDataList(), timeReader.getDataList());
         });
@@ -61,8 +63,8 @@ public class AppService {
         for (InputData data : result) {
             log.info(data.toString());
         }
-//        inputDataRepository.deleteAll();
-//        inputDataRepository.saveAll(result);
+        inputDataRepository.deleteAll();
+        inputDataRepository.saveAll(result);
     }
 
     public List<InputData> findByCourseDateBetween(String startDate, String endDate, List<String> teachers) throws ParseException {

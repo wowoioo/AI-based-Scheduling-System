@@ -1,5 +1,7 @@
 package com.github.rayinfinite.scheduler.entity;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,9 +17,14 @@ import java.io.Serializable;
 public class Classroom implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ExcelIgnore
+    @ExcelProperty("ID")
     private Integer id;
 
+    @ExcelProperty("Name")
     private String name;
+
+    @ExcelProperty("Size")
     private Integer size;
 
     public Classroom(int roomId, String roomNumber, int capacity) {
