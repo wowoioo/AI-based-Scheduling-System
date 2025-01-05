@@ -43,7 +43,7 @@ public class Individual {
 
         for (Course course : timetable.getCourses().values()) { // 获取 Timetable 中所有课程
             // 随机分配时间段
-            int timeslotId = timetable.getRandomTimeslot().getTimeslotId();
+            int timeslotId = timetable.getRandomTimeslot().getId();
             newChromosome[chromosomeIndex] = timeslotId;
             chromosomeIndex++;
 

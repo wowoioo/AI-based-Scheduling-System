@@ -62,11 +62,11 @@ public class Timetable {
 
         // Iterate through cohorts and their corresponding courses
         for (Cohort cohort : this.getCohortsAsArray()) {
-            for (Course course : this.getCoursesByCohortId(cohort.getCohortId())) {
+            for (Course course : this.getCoursesByCohortId(cohort.getId())) {
                 int duration = course.getDuration();
 
                 for (int dayOffset = 0; dayOffset < duration; dayOffset++) {
-                    plans[planIndex] = new TeachingPlan(planIndex, cohort.getCohortId(), course.getId());
+                    plans[planIndex] = new TeachingPlan(planIndex, cohort.getId(), course.getId());
 
                     int timeslotId = chromosome[chromosomePos] + dayOffset;
                     if (timeslotId > this.getMaxTimeslotId()) {

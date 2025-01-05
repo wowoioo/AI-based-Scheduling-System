@@ -18,7 +18,7 @@ import java.util.Date;
 public class Timeslot {
     @Id
     @ExcelIgnore
-    private int timeslotId;
+    private int id;
     @ExcelProperty(converter = DateConverter.class)
     private Date date;
 }

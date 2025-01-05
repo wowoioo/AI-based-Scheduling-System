@@ -12,21 +12,13 @@ import lombok.Setter;
 public class Cohort {
     @Id
     @ExcelIgnore
-    private int cohortId;
+    private int id;
     private int cohortSize;
     private String cohortType;
-    private String cohort;
+    private String name;
 
     @ExcelIgnore
     private int typeId;
     @ExcelIgnore
     private int[] courseIds;
-
-    public Cohort(int cohortId, String cohort, int cohortSize, int typeId, String cohortType) {
-        this.cohortId = cohortId;
-        this.cohort = cohort;
-        this.cohortSize = cohortSize;
-        this.typeId = typeId;
-        this.cohortType = cohortType;
-    }
 }

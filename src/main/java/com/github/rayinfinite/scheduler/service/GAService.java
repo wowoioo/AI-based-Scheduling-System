@@ -20,16 +20,15 @@ import java.util.stream.IntStream;
 @Slf4j
 @Service
 public class GAService {
-    public List<Course> jgap(List<Course> courseList, List<Cohort> cohortList, List<Timeslot> timeslotList,
-                             List<Classroom> classroomList) {
+    public List<Course> gap(List<Course> courseList, List<Cohort> cohortList, List<Timeslot> timeslotList,
+                            List<Classroom> classroomList) {
         IntStream.range(0, courseList.size()).forEach(i -> courseList.get(i).setId(i));
-        IntStream.range(0, cohortList.size()).forEach(i -> cohortList.get(i).setCohortId(i));
-        IntStream.range(0, timeslotList.size()).forEach(i -> timeslotList.get(i).setTimeslotId(i));
-        Map<String, List<Course>> groupByCohortData =
-                courseList.stream().collect(Collectors.groupingBy(Course::getCohort));
+        IntStream.range(0, cohortList.size()).forEach(i -> cohortList.get(i).setId(i));
+        IntStream.range(0, timeslotList.size()).forEach(i -> timeslotList.get(i).setId(i));
+        Map<String, List<Course>> cohortCourses = courseList.stream().collect(Collectors.groupingBy(Course::getCohort));
         for (Cohort cohort : cohortList) {
-            if (groupByCohortData.containsKey(cohort.getCohort())) {
-                int[] courseIds = groupByCohortData.get(cohort.getCohort()).stream()
+            if (cohortCourses.containsKey(cohort.getName())) {
+                int[] courseIds = cohortCourses.get(cohort.getName()).stream()
                         .map(Course::getId)
                         .mapToInt(id -> id)
                         .toArray();
@@ -37,60 +36,42 @@ public class GAService {
             }
         }
         var teacherMap = getProfessorMap(courseList);
-        Map<Integer, Course> inputDataMap = courseList.stream().collect(Collectors.toMap(Course::getId,
-                Function.identity()));
-        Map<Integer, Cohort> cohortMap = cohortList.stream().collect(Collectors.toMap(Cohort::getCohortId,
-                Function.identity()));
-        Map<Integer, Timeslot> timeslotMap = timeslotList.stream().collect(Collectors.toMap(Timeslot::getTimeslotId,
-                Function.identity()));
-        Map<Integer, Classroom> classroomMap = classroomList.stream().collect(Collectors.toMap(Classroom::getId,
-                Function.identity()));
+        var courseMap = createMap(courseList, Course::getId);
+        var cohortMap = createMap(cohortList, Cohort::getId);
+        var timeslotMap = createMap(timeslotList, Timeslot::getId);
+        var classroomMap = createMap(classroomList, Classroom::getId);
 
-        return getSchedule(inputDataMap, cohortMap, timeslotMap, classroomMap, teacherMap);
+        Timetable timetable = new Timetable(courseMap, cohortMap, timeslotMap, classroomMap, teacherMap);
+        return getSchedule(timetable);
+    }
+
+    private <T> Map<Integer, T> createMap(List<T> list, Function<T, Integer> keyExtractor) {
+        return list.stream().collect(Collectors.toMap(keyExtractor, Function.identity()));
     }
 
     private Map<Integer, Professor> getProfessorMap(List<Course> courseList) {
         int i = 0;
         Map<String, Integer> teacherMap = new HashMap<>();
-        for (Course data : courseList) {
+        for (Course course : courseList) {
             List<Integer> teachers = new ArrayList<>();
-            if (data.getTeacher1() != null && !data.getTeacher1().isEmpty()) {
-                if (teacherMap.containsKey(data.getTeacher1())) {
-                    teachers.add(teacherMap.get(data.getTeacher1()));
-                } else {
-                    teachers.add(i);
-                    teacherMap.put(data.getTeacher1(), i++);
+            List<String> teacherNames = List.of(course.getTeacher1(), course.getTeacher2(), course.getTeacher3());
+            for (String teacherName : teacherNames) {
+                if (teacherName != null && !teacherName.isEmpty()) {
+                    if (teacherMap.containsKey(teacherName)) {
+                        teachers.add(teacherMap.get(teacherName));
+                    } else {
+                        teachers.add(i);
+                        teacherMap.put(teacherName, i++);
+                    }
                 }
             }
-            if (data.getTeacher2() != null && !data.getTeacher2().isEmpty()) {
-                if (teacherMap.containsKey(data.getTeacher2())) {
-                    teachers.add(teacherMap.get(data.getTeacher2()));
-                } else {
-                    teachers.add(i);
-                    teacherMap.put(data.getTeacher2(), i++);
-                }
-            }
-            if (data.getTeacher3() != null && !data.getTeacher3().isEmpty()) {
-                if (teacherMap.containsKey(data.getTeacher3())) {
-                    teachers.add(teacherMap.get(data.getTeacher3()));
-                } else {
-                    teachers.add(i);
-                    teacherMap.put(data.getTeacher3(), i++);
-                }
-            }
-            data.setTeacherIds(teachers.stream().mapToInt(Integer::intValue).toArray());
+            course.setTeacherIds(teachers.stream().mapToInt(Integer::intValue).toArray());
         }
         return teacherMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue,
                 entry -> new Professor(entry.getValue(), entry.getKey())));
     }
 
-    public List<Course> getSchedule(Map<Integer, Course> inputDataMap,
-                                    Map<Integer, Cohort> cohortMap,
-                                    Map<Integer, Timeslot> timeslotMap,
-                                    Map<Integer, Classroom> classroomMap,
-                                    Map<Integer, Professor> professorMap) {
-        Timetable timetable = new Timetable(inputDataMap, cohortMap, timeslotMap, classroomMap, professorMap);
-
+    public List<Course> getSchedule(Timetable timetable) {
         // 初始化 GA
         int maxGenerations = 1000;
         GA ga = new GA(100, 0.001, 0.98, 1, 5);
