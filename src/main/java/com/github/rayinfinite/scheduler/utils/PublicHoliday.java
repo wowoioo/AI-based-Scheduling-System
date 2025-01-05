@@ -12,16 +12,15 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PublicHoliday {
     private static final String ICS_URL = "https://www.mom.gov.sg/-/media/mom/documents/employment-practices/public" +
             "-holidays/public-holidays-sg-2025.ics";
-    private static final Set<Integer> parsedYears = new HashSet<>();
-    private static final Map<LocalDate, String> holidays = new HashMap<>();
+    private static final Set<Integer> parsedYears = ConcurrentHashMap.newKeySet();
+    private static final Map<LocalDate, String> holidays = new ConcurrentHashMap<>();
 
     private PublicHoliday() {
         throw new IllegalStateException("Utility class");
@@ -33,9 +32,8 @@ public class PublicHoliday {
             throw new IllegalArgumentException("Year must be between 2018 and next year");
         }
         if (!parsedYears.contains(year)) {
-            String url = ICS_URL.replace("2025", String.valueOf(year));
             try {
-                parseDownloadedIcsContent(url);
+                parseDownloadedIcsContent(year);
                 parsedYears.add(year);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -49,7 +47,11 @@ public class PublicHoliday {
     }
 
     //TODO: retry network request if failed
-    private static synchronized void parseDownloadedIcsContent(String urlString) throws Exception {
+    private static synchronized void parseDownloadedIcsContent(int year) throws Exception {
+        String urlString = ICS_URL.replace("2025", String.valueOf(year));
+        if (parsedYears.contains(year)) {
+            return;
+        }
         URL url = URI.create(urlString).toURL();
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
