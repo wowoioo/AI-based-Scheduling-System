@@ -1,4 +1,4 @@
-import {EventSourceFuncArg} from "@fullcalendar/core";
+import { EventSourceFuncArg } from "@fullcalendar/core";
 
 export const ROOT_PATH = "http://localhost:9000";
 
@@ -42,11 +42,11 @@ export interface ClassroomType {
 
 export async function getClassroom(): Promise<ClassroomType[]> {
   return await fetch(`${ROOT_PATH}/classroom`)
-  .then((response) => response.json())
-  .then((data) => {
-    return data.data;
-  })
-  .catch((error) => console.error("Error:", error));
+    .then((response) => response.json())
+    .then((data) => {
+      return data.data;
+    })
+    .catch((error) => console.error("Error:", error));
 }
 
 export async function saveClassroom(data: ClassroomType) {
@@ -57,20 +57,26 @@ export async function saveClassroom(data: ClassroomType) {
     },
     body: JSON.stringify(data),
   })
-  .then((response) => response.json())
-  .then((data) => {
-    return data.data;
-  })
-  .catch((error) => console.error("Error:", error));
+    .then((response) => response.json())
+    .then((data) => {
+      return data.data;
+    })
+    .catch((error) => console.error("Error:", error));
 }
 
 export async function deleteClassroom(id: number) {
   return await fetch(`${ROOT_PATH}/classroom/${id}`, {
     method: "DELETE",
   })
-  .then((response) => response.json())
-  .then((data) => {
-    return data.data;
-  })
-  .catch((error) => console.error("Error:", error));
+    .then((response) => response.json())
+    .then((data) => {
+      return data.data;
+    })
+    .catch((error) => console.error("Error:", error));
+}
+
+export async function getUser(): Promise<Boolean> {
+  return await fetch(`${ROOT_PATH}/login`)
+    .then((response) => response.json())
+    .catch((error) => console.error("Error:", error));
 }

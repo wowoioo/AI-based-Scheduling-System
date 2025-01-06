@@ -1,13 +1,13 @@
-import React, {memo, useCallback, useEffect, useRef, useState} from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
-import {CalendarApi, EventApi, EventSourceFunc, formatDate} from "@fullcalendar/core";
+import { CalendarApi, EventApi, EventSourceFunc, formatDate } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import {getCalenderData} from "./api";
+import { getCalenderData } from "./api";
 import Header from "./MyCalenderHeader";
-import {useViewport} from "./ViewportContext";
-import {Modal} from "antd";
+import { useViewport } from "./ViewportContext";
+import { Modal } from "antd";
 
 interface EventDetailsProps {
   selectedEvent: any;

@@ -10,3 +10,13 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  cloud:
+    azure:
+      active-directory:
+        enabled: true
+        profile:
+          tenant-id: common
+        credential:
+          client-id: f3ee6226-fd8b-4cae-a9e7-f3c211b0970b
+          client-secret:
+        post-logout-redirect-uri: http://localhost:8080

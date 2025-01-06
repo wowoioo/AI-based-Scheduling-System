@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react";
-import {Button, DatePicker, DatePickerProps, Radio, RadioChangeEvent, Select, SelectProps} from "antd";
-import {LeftOutlined, RightOutlined} from "@ant-design/icons";
-import {useViewport} from "./ViewportContext";
-import {getAllTeachers} from "./api";
+import React, { useEffect, useState } from "react";
+import { Button, DatePicker, DatePickerProps, Radio, RadioChangeEvent, Select, SelectProps } from "antd";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { useViewport } from "./ViewportContext";
+import { getAllTeachers } from "./api";
 
 const viewOptions = [
   { label: "month", value: "dayGridMonth" },

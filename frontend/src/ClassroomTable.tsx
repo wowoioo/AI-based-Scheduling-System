@@ -19,13 +19,13 @@ const ClassroomTable: React.FC = forwardRef<{ add: () => void }, {}>((_, ref) =>
 
   const save = async (values: Partial<ClassroomType>) => {
     if (editingRecord && editingRecord.id) {
-        values.id = editingRecord.id;
+      values.id = editingRecord.id;
     }
     await saveClassroom(values as ClassroomType);
     await fetch();
     setIsModalOpen(false);
     setEditingRecord(null);
-};
+  };
 
   const add = () => {
     setEditingRecord(null);

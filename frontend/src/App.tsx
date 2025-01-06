@@ -1,6 +1,6 @@
 import MyCalendar from "./MyCalender";
 import UploadPage from "./UploadPage";
-import {useViewport} from "./ViewportContext";
+import { useViewport } from "./ViewportContext";
 
 const App = () => {
   const viewport = useViewport();

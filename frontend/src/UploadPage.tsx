@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
+import type { UploadProps } from "antd";
 import { Button, Drawer, message, Space, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import type { UploadProps } from "antd";
-import { ROOT_PATH } from "./api";
+import { getUser, ROOT_PATH } from "./api";
 import ClassroomTable from "./ClassroomTable";
 
 const UploadExcel: React.FC = () => {
@@ -35,8 +35,13 @@ const UploadPage: React.FC = () => {
     }
   };
 
-  const showDrawer = () => {
-    setOpen(true);
+  const showDrawer = async () => {
+    const data = await getUser();
+    if (data) {
+      setOpen(true);
+    } else {
+      window.location.href = "/oauth2/authorization/azure";
+    }
   };
 
   const onClose = () => {
@@ -46,12 +51,12 @@ const UploadPage: React.FC = () => {
   return (
     <>
       <Button type="primary" onClick={showDrawer}>
-        Input Course Data
+        Login & Input Course Data
       </Button>
       <Drawer title="Input Course Data" onClose={onClose} open={open} size="large">
-        <Space style={{ width: "100%" }}>
-          <UploadExcel />{" "}
-          <Button onClick={handleAddRow} type="primary" style={{ marginBottom: 16 }}>
+        <Space style={{ width: "100%", marginBottom: 16 }}>
+          <UploadExcel />
+          <Button onClick={handleAddRow} type="primary">
             Add a row
           </Button>
         </Space>
