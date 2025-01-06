@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -40,6 +41,7 @@ public class GAService {
         var cohortMap = createMap(cohortList, Cohort::getId);
         var timeslotMap = createMap(timeslotList, Timeslot::getId);
         var classroomMap = createMap(classroomList, Classroom::getId);
+        setCourseCohortId(courseList, cohortMap);
 
         Timetable timetable = new Timetable(courseMap, cohortMap, timeslotMap, classroomMap, teacherMap);
         return getSchedule(timetable);
@@ -49,20 +51,33 @@ public class GAService {
         return list.stream().collect(Collectors.toMap(keyExtractor, Function.identity()));
     }
 
+    private void setCourseCohortId(List<Course> courseList, Map<Integer, Cohort> cohortMap) {
+        Map<String, Integer> invertedCohort = new HashMap<>();
+        for (var entry : cohortMap.entrySet()) {
+            invertedCohort.put(entry.getValue().getName(), entry.getKey());
+        }
+        for (var course : courseList) {
+            course.setCohortId(invertedCohort.getOrDefault(course.getCohort(), -1));
+            if (course.getCohortId() == -1) {
+                log.warn("Cohort not found for course: {}", course.getCourseName());
+            }
+        }
+    }
+
     private Map<Integer, Professor> getProfessorMap(List<Course> courseList) {
         int i = 0;
         Map<String, Integer> teacherMap = new HashMap<>();
         for (Course course : courseList) {
             List<Integer> teachers = new ArrayList<>();
-            List<String> teacherNames = List.of(course.getTeacher1(), course.getTeacher2(), course.getTeacher3());
+            List<String> teacherNames = Stream.of(course.getTeacher1(), course.getTeacher2(), course.getTeacher3())
+                    .filter(name -> name != null && !name.isEmpty()).toList();
+            course.setProfessorNum(teacherNames.size());
             for (String teacherName : teacherNames) {
-                if (teacherName != null && !teacherName.isEmpty()) {
-                    if (teacherMap.containsKey(teacherName)) {
-                        teachers.add(teacherMap.get(teacherName));
-                    } else {
-                        teachers.add(i);
-                        teacherMap.put(teacherName, i++);
-                    }
+                if (teacherMap.containsKey(teacherName)) {
+                    teachers.add(teacherMap.get(teacherName));
+                } else {
+                    teachers.add(i);
+                    teacherMap.put(teacherName, i++);
                 }
             }
             course.setTeacherIds(teachers.stream().mapToInt(Integer::intValue).toArray());
