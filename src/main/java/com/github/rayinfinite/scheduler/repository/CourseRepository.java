@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Date;
 import java.util.List;
 
-public interface CourseRepository extends JpaRepository<Course, Long> {
+public interface CourseRepository extends JpaRepository<Course, Integer> {
     List<Course> findByCourseDateBetween(Date courseDateAfter, Date courseDateBefore);
 
     @Query("SELECT DISTINCT teacher1 FROM Course")

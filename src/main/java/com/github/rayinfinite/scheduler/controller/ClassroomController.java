@@ -29,7 +29,7 @@ public class ClassroomController {
     }
 
     @DeleteMapping("/{id}")
-    public Response deleteClassroom(@PathVariable("id") Long classroomId) {
+    public Response deleteClassroom(@PathVariable("id") Integer classroomId) {
         var result = service.deleteClassroom(classroomId);
         return new Response(result);
     }

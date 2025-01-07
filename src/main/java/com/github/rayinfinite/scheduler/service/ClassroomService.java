@@ -22,7 +22,7 @@ public class ClassroomService {
         return classroomRepository.save(classroom);
     }
 
-    public Classroom deleteClassroom(Long id) {
+    public Classroom deleteClassroom(Integer id) {
         Classroom classroom = classroomRepository.findById(id).orElse(null);
         if (classroom != null) {
             classroomRepository.delete(classroom);
