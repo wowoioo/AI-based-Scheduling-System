@@ -1,6 +1,8 @@
 package com.github.rayinfinite.scheduler.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import net.fortuna.ical4j.data.CalendarBuilder;
+import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.component.VEvent;
@@ -16,6 +18,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
+@SuppressWarnings("unused")
 public class PublicHoliday {
     private static final String ICS_URL = "https://www.mom.gov.sg/-/media/mom/documents/employment-practices/public" +
             "-holidays/public-holidays-sg-2025.ics";
@@ -36,7 +40,7 @@ public class PublicHoliday {
                 parseDownloadedIcsContent(year);
                 parsedYears.add(year);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("Failed to parse ICS content", e);
             }
         }
         return holidays.containsKey(date);
@@ -47,7 +51,7 @@ public class PublicHoliday {
     }
 
     //TODO: retry network request if failed
-    private static synchronized void parseDownloadedIcsContent(int year) throws Exception {
+    private static synchronized void parseDownloadedIcsContent(int year) throws IOException, ParserException {
         String urlString = ICS_URL.replace("2025", String.valueOf(year));
         if (parsedYears.contains(year)) {
             return;
@@ -76,11 +80,6 @@ public class PublicHoliday {
                             LocalDate start = LocalDate.from(getDateTimeStart.get().getDate());
                             holidays.put(start, summary);
                         }
-//                        LocalDate end = LocalDate.from(event.getDateTimeEnd().get().getDate());
-//                        System.out.println("Summary: " + summary);
-//                        System.out.println("Start: " + start);
-//                        System.out.println("End: " + end);
-//                        System.out.println("----------------------------");
                     }
                 }
             }

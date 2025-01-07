@@ -56,9 +56,6 @@ public class AppService {
 
     public void gap(List<Course> courseList, List<Cohort> cohortList, List<Timeslot> timeslotList) {
         var result = gaService.gap(courseList, cohortList, timeslotList, classroomService.getAllClassrooms());
-//        for (InputData data : result) {
-//            log.info(data.toString());
-//        }
         courseRepository.deleteAll();
         courseRepository.saveAll(result);
         log.info("{} Data saved to database", result.size());

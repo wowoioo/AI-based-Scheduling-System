@@ -6,7 +6,6 @@ import com.github.rayinfinite.scheduler.excel.DateConverter;
 import com.github.rayinfinite.scheduler.excel.IntegerConverter;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,6 @@ import java.util.Date;
 public class Course {
     @Id
     @ExcelIgnore
-//    @Setter
     Integer id;
     String practiceArea;
     String courseName;
