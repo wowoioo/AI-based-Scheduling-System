@@ -1,32 +1,29 @@
-import React, { useRef, useState } from "react";
-import type { UploadProps } from "antd";
-import { Button, Drawer, message, Space, Upload } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
-import { getUser, ROOT_PATH } from "./api";
+import React, { useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { getUser, ROOT_PATH, uploadExcel } from "./api";
 import ClassroomTable from "./ClassroomTable";
+import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { Separator } from "./components/ui/separator";
+import { Input } from "./components/ui/input";
 
 const UploadExcel: React.FC = () => {
-  const props: UploadProps = {
-    accept: ".xlsx",
-    action: `${ROOT_PATH}/upload`,
-    name: "file",
-    async onChange(info) {
-      if (info.file.status === "done") {
-        message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      await uploadExcel(file);
+      window.location.reload();
+    } catch (error) {
+      console.error("Upload failed:", error);
+      alert("Upload failed");
+    }
   };
-  return (
-    <Upload {...props}>
-      <Button icon={<UploadOutlined />}>Click to Upload Course</Button>
-    </Upload>
-  );
+
+  return <Input type="file" accept=".xlsx,.xls" onChange={handleFileChange} className="cursor-pointer" />;
 };
 
 const UploadPage: React.FC = () => {
-  const [open, setOpen] = useState(false);
   const classroomTableRef = useRef<{ add: () => void } | null>(null);
 
   const handleAddRow = () => {
@@ -37,32 +34,31 @@ const UploadPage: React.FC = () => {
 
   const showDrawer = async () => {
     const data = await getUser();
-    if (data) {
-      setOpen(true);
-    } else {
-      window.location.href = "/oauth2/authorization/azure";
+    if (!data) {
+      window.location.href = `${ROOT_PATH}/oauth2/authorization/azure`;
     }
   };
 
-  const onClose = () => {
-    setOpen(false);
-  };
-
   return (
-    <>
-      <Button type="primary" onClick={showDrawer}>
-        Login & Input Course Data
-      </Button>
-      <Drawer title="Input Course Data" onClose={onClose} open={open} size="large">
-        <Space style={{ width: "100%", marginBottom: 16 }}>
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button className="my-3" onClick={showDrawer}>
+          Login & Input Course Data
+        </Button>
+      </SheetTrigger>
+      <SheetContent className="w-[640px] max-w-full sm:max-w-[640px] gap-4 flex flex-col">
+        <SheetHeader>
+          <SheetTitle>Input Course Data</SheetTitle>
+        </SheetHeader>
+        <Separator />
+        <div className="flex flex-row w-full gap-4">
           <UploadExcel />
-          <Button onClick={handleAddRow} type="primary">
-            Add a row
-          </Button>
-        </Space>
+          <Button onClick={handleAddRow}>Add new classroom</Button>
+          <SheetDescription />
+        </div>
         <ClassroomTable ref={classroomTableRef} />
-      </Drawer>
-    </>
+      </SheetContent>
+    </Sheet>
   );
 };
 

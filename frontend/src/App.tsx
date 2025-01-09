@@ -1,18 +1,14 @@
-import MyCalendar from "./MyCalender";
-import UploadPage from "./UploadPage";
-import { useViewport } from "./ViewportContext";
+import MyCalendar from './MyCalender';
+import UploadPage from './UploadPage';
 
-const App = () => {
-  const viewport = useViewport();
-  if (!viewport) return null;
-
+function App() {
   return (
-    <div style={{ padding: viewport.width > 660 ? "0px 24px" : "0" }}>
-      <h1>AI-based Scheduling System</h1>
+    <div className="px-2 sm:px-6">
+      <h1 className='my-5'>AI Course Scheduling System</h1>
       <UploadPage />
       <MyCalendar />
     </div>
   );
-};
+}
 
-export default App;
+export default App

@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Button, DatePicker, DatePickerProps, Radio, RadioChangeEvent, Select, SelectProps } from "antd";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { useViewport } from "./ViewportContext";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getAllTeachers } from "./api";
+import { DatePicker } from "./components/date-picker";
+import { Tabs, TabsList, TabsTrigger } from "./components/ui/tabs";
+import { MultiSelect } from "./components/multi-select";
+import { CalendarApi } from "@fullcalendar/core/index.js";
 
 const viewOptions = [
-  { label: "month", value: "dayGridMonth" },
-  { label: "week", value: "timeGridWeek" },
-  { label: "day", value: "timeGridDay" },
+  { label: "Month", value: "dayGridMonth" },
+  { label: "Week", value: "timeGridWeek" },
+  { label: "Day", value: "timeGridDay" },
 ];
 
-const Header: React.FC<{ calendarApi: any; setTeachers: React.Dispatch<React.SetStateAction<any>> }> = ({
-  calendarApi,
-  setTeachers,
-}) => {
+const Header: React.FC<{
+  calendarApi: CalendarApi;
+  setTeachers: React.Dispatch<React.SetStateAction<string[]>>;
+}> = ({ calendarApi, setTeachers }) => {
   const [radioValue, setRadioValue] = useState("dayGridMonth");
   const [weekend, setWeekend] = useState(true);
-  const [selectOptions, setSelectOptions] = useState<SelectProps["options"]>([]);
-
-  const viewport = useViewport();
-  if (!viewport) return null;
-  const { width } = viewport;
+  const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
+  const [selectOptions, setSelectOptions] = useState<{ label: string; value: string }[]>([]);
 
   useEffect(() => {
     const fetchTeachers = async () => {
@@ -31,12 +32,13 @@ const Header: React.FC<{ calendarApi: any; setTeachers: React.Dispatch<React.Set
     fetchTeachers();
   }, []);
 
-  const changeTime: DatePickerProps["onChange"] = (date) => {
-    let time = date.toDate();
-    calendarApi.gotoDate(time);
+  const changeTime = (date: Date | undefined) => {
+    if (date) {
+      calendarApi.gotoDate(date);
+    }
   };
 
-  const changeView = ({ target: { value } }: RadioChangeEvent) => {
+  const changeView = (value: string) => {
     calendarApi.changeView(value);
     setRadioValue(value);
   };
@@ -47,61 +49,66 @@ const Header: React.FC<{ calendarApi: any; setTeachers: React.Dispatch<React.Set
   };
 
   const selectTeachers = (value: string[]) => {
+    setSelectedTeachers(value);
     setTeachers(value);
   };
 
   useEffect(() => {
     if (calendarApi) {
-      calendarApi.gotoDate(new Date(2023, 2, 1));
+      calendarApi.gotoDate(new Date(2024, 2, 1));
     }
   }, [calendarApi]);
 
   return (
-    <>
-      <div style={{ display: "flex", alignItems: "center", padding: "10px 0px" }}>
-        <span style={{ marginRight: "10px", minWidth: "120px" }}>Select lecturers:</span>
-        <Select
-          mode="multiple"
-          allowClear
-          style={{ width: "100%" }}
-          placeholder="Please select lecturers"
-          onChange={selectTeachers}
+    <div className="space-y-4">
+      <div className="flex items-center gap-4">
+        <Label className="min-w-[120px]">Select lecturers:</Label>
+        <MultiSelect
           options={selectOptions}
+          value={selectedTeachers}
+          onValueChange={selectTeachers}
+          placeholder="Please select lecturers"
+          className="w-full bg-white"
         />
       </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexDirection: width > 1200 ? "row" : "column",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <Button type="primary" onClick={() => calendarApi?.today()}>
+
+      <div className={`flex flex-col lg:flex-row justify-between items-center gap-4 py-5`}>
+        <div className="flex items-center gap-4">
+          <Button variant="default" onClick={() => calendarApi?.today()}>
             Today
           </Button>
-          <DatePicker onChange={changeTime} />
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <Button type="primary" shape="circle" icon={<LeftOutlined />} onClick={() => calendarApi?.prev()} />
-          <h1 style={{ minWidth: "300px", textAlign: "center" }}>{calendarApi?.view.title}</h1>
-          <Button type="primary" shape="circle" icon={<RightOutlined />} onClick={() => calendarApi?.next()} />
-        </div>
-        <div style={{ display: "flex", gap: "10px", margin: "12px 0px" }}>
-          <Button type={weekend ? "primary" : "default"} onClick={changeWeekendsVisible}>
-            weekends
-          </Button>
-          <Radio.Group
-            options={viewOptions}
-            optionType="button"
-            buttonStyle="solid"
-            onChange={changeView}
-            value={radioValue}
+          <DatePicker
+            onChange={changeTime}
+            // className="border rounded-md"
           />
         </div>
+
+        <div className="flex items-center gap-4">
+          <Button variant="outline" size="icon" onClick={() => calendarApi?.prev()}>
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+          <h1 className="min-w-[240px] text-center">{calendarApi?.view.title}</h1>
+          <Button variant="outline" size="icon" onClick={() => calendarApi?.next()}>
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <Button variant={weekend ? "default" : "outline"} onClick={changeWeekendsVisible}>
+            Weekends
+          </Button>
+          <Tabs value={radioValue} onValueChange={changeView} className="flex gap-2">
+            <TabsList>
+              {viewOptions.map((option) => (
+                <TabsTrigger key={option.value} value={option.value} onClick={() => changeView(option.value)}>
+                  {option.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

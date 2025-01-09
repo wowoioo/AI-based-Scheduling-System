@@ -8,10 +8,10 @@ export async function getCalenderData(fetchInfo: EventSourceFuncArg, teachers: s
   return await fetch(`${ROOT_PATH}/data?${params}`)
     .then((response) => response.json())
     .then((data) => {
-      let events = data.data;
+      const events = data.data;
       events.forEach((event: any) => {
         event.title = event.courseName;
-        let date = new Date(Number(event.courseDate));
+        const date = new Date(Number(event.courseDate));
         event.start = date.toISOString();
         event.end = date.toISOString();
         event.allDay = true;
@@ -37,7 +37,7 @@ export interface ClassroomType {
   id: number;
   name: string;
   size: number;
-  software: string | null;
+  software?: string | undefined;
 }
 
 export async function getClassroom(): Promise<ClassroomType[]> {
@@ -75,8 +75,24 @@ export async function deleteClassroom(id: number) {
     .catch((error) => console.error("Error:", error));
 }
 
-export async function getUser(): Promise<Boolean> {
+export async function getUser(): Promise<boolean> {
   return await fetch(`${ROOT_PATH}/login`)
     .then((response) => response.json())
     .catch((error) => console.error("Error:", error));
 }
+
+export const uploadExcel = async (file: File) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetch(`${ROOT_PATH}/upload`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("Upload failed");
+  }
+
+  return response.json();
+};

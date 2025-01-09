@@ -1,12 +1,33 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { Form, Input, Modal, Popconfirm, Space, Table } from "antd";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import { ClassroomType, deleteClassroom, getClassroom, saveClassroom } from "./api";
 
-const ClassroomTable: React.FC = forwardRef<{ add: () => void }, {}>((_, ref) => {
-  const [form] = Form.useForm();
+const formSchema = z.object({
+  name: z.string().min(1, "Please input the Classroom Name!"),
+  size: z.number().min(1, "Please input the Classroom Capacity!"),
+  software: z.string().optional(),
+});
+
+const ClassroomTable = forwardRef<{ add: () => void }, object>((_, ref) => {
   const [data, setData] = useState<ClassroomType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<Partial<ClassroomType> | null>(null);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      size: 0,
+      software: "",
+    },
+  });
 
   useImperativeHandle(ref, () => ({
     add,
@@ -17,14 +38,19 @@ const ClassroomTable: React.FC = forwardRef<{ add: () => void }, {}>((_, ref) =>
     setIsModalOpen(true);
   };
 
-  const save = async (values: Partial<ClassroomType>) => {
-    if (editingRecord && editingRecord.id) {
-      values.id = editingRecord.id;
+  const save = async (values: z.infer<typeof formSchema>) => {
+    if (values.software === "") {
+      delete values.software;
     }
-    await saveClassroom(values as ClassroomType);
+    if (editingRecord && editingRecord.id) {
+      await saveClassroom({ ...values, id: editingRecord.id });
+    } else {
+      await saveClassroom(values as ClassroomType);
+    }
     await fetch();
     setIsModalOpen(false);
     setEditingRecord(null);
+    form.reset();
   };
 
   const add = () => {
@@ -38,7 +64,7 @@ const ClassroomTable: React.FC = forwardRef<{ add: () => void }, {}>((_, ref) =>
   };
 
   const fetch = async () => {
-    let data = await getClassroom();
+    const data = await getClassroom();
     setData(data);
   };
 
@@ -48,73 +74,113 @@ const ClassroomTable: React.FC = forwardRef<{ add: () => void }, {}>((_, ref) =>
 
   useEffect(() => {
     if (editingRecord) {
-      form.setFieldsValue(editingRecord);
+      form.setValue("name", editingRecord.name || "");
+      form.setValue("size", Number(editingRecord.size) || 0);
+      form.setValue("software", editingRecord.software || "");
     } else {
-      form.resetFields();
+      form.reset();
     }
   }, [editingRecord, form]);
 
-  const columns = [
-    {
-      title: "Classroom",
-      dataIndex: "name",
-      key: "name",
-      sorter: (a: ClassroomType, b: ClassroomType) => a.name.localeCompare(b.name),
-    },
-    {
-      title: "Size",
-      dataIndex: "size",
-      key: "size",
-      sorter: (a: ClassroomType, b: ClassroomType) => a.size - b.size,
-    },
-    {
-      title: "Software",
-      dataIndex: "software",
-      key: "software",
-      render: (text: string | null) => (text ? text : "N/A"),
-    },
-    {
-      title: "Action",
-      key: "action",
-      width: 100,
-      render: (_: any, record: ClassroomType) => (
-        <Space size="middle">
-          <a onClick={() => edit(record)}>Edit</a>
-          <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
-            <a>Delete</a>
-          </Popconfirm>
-        </Space>
-      ),
-    },
-  ];
-
   return (
     <>
-      <Modal
-        title={editingRecord ? "Edit Classroom" : "Create a new classroom"}
-        okText={editingRecord ? "Save" : "Create"}
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        onOk={() => form.submit()}
-        destroyOnClose
-      >
-        <Form layout="vertical" form={form} name="form_in_modal" initialValues={{ modifier: "public" }} onFinish={save}>
-          <Form.Item
-            name="name"
-            label="Classroom"
-            rules={[{ required: true, message: "Please input the classroom name!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item name="size" label="Size" rules={[{ required: true, message: "Please input the size!" }]}>
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item name="software" label="Software">
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
-      <Table<ClassroomType> columns={columns} dataSource={data} rowKey="id" pagination={{ pageSize: 10 }} />
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingRecord ? "Edit classroom" : "Create a new classroom"}</DialogTitle>
+          </DialogHeader>
+          <DialogDescription />
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(save)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Classroom</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="size"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Capacity</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="software"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Software</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">{editingRecord ? "Save" : "Create"}</Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+
+      <div className="border rounded-md">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Classroom</TableHead>
+              <TableHead>Capacity</TableHead>
+              <TableHead>Software</TableHead>
+              <TableHead className="w-[100px]">Operation</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((record) => (
+              <TableRow key={record.id}>
+                <TableCell>{record.name}</TableCell>
+                <TableCell>{record.size}</TableCell>
+                <TableCell>{record.software || "N/A"}</TableCell>
+                <TableCell>
+                  <div className="flex space-x-2">
+                    <Button variant="link" size="sm" onClick={() => edit(record)}>
+                      Edit
+                    </Button>
+                    <Button
+                      variant="link"
+                      size="sm"
+                      onClick={() => {
+                        if (window.confirm(`Confirm to delete ${record.name}?`)) {
+                          handleDelete(record.id);
+                        }
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </>
   );
 });
