@@ -15,7 +15,7 @@ public class ClassroomService {
     private final ClassroomRepository classroomRepository;
 
     public List<Classroom> getAllClassrooms() {
-        return classroomRepository.findAll();
+        return classroomRepository.findAllByOrderByIdAsc();
     }
 
     public Classroom updateClassroom(Classroom classroom) {
