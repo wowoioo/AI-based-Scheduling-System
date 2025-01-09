@@ -39,7 +39,7 @@ class ClassroomServiceTest {
         List<Classroom> classrooms = Arrays.asList(classroom1, classroom2);
 
         // 设置 mock 行为
-        when(classroomRepository.findAll()).thenReturn(classrooms);
+        when(classroomRepository.findAllByOrderByIdAsc()).thenReturn(classrooms);
 
         // 执行测试
         List<Classroom> result = classroomService.getAllClassrooms();
@@ -48,7 +48,7 @@ class ClassroomServiceTest {
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getName()).isEqualTo("Room 1");
         assertThat(result.get(1).getName()).isEqualTo("Room 2");
-        verify(classroomRepository).findAll();
+        verify(classroomRepository).findAllByOrderByIdAsc();
     }
 
     @Test
