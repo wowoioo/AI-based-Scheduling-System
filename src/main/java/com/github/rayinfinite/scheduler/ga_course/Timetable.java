@@ -505,18 +505,6 @@ public class Timetable {
         return validProfessorIds;
     }
 
-    private boolean hasConflict(List<TeachingPlan> plans, int timeslotId) {
-        if (plans == null) {
-            return false;
-        }
-        for (TeachingPlan plan : plans) {
-            if (plan.getTimeslotId() == timeslotId) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
 
 }
