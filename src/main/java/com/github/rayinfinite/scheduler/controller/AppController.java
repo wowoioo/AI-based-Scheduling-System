@@ -27,14 +27,21 @@ public class AppController {
 
     @GetMapping("/data")
     public Response getData(String startStr, String endStr,
-                            @RequestParam(required = false) List<String> teachers) throws ParseException {
-        List<Course> data = service.findByCourseDateBetween(startStr, endStr, teachers);
+                            @RequestParam(required = false) List<String> teachers,
+                            @RequestParam(required = false) List<String> students) throws ParseException {
+        List<Course> data = service.findByCourseDateBetween(startStr, endStr, teachers, students);
         return new Response(data);
     }
 
     @GetMapping("/teacher")
     public Response getAllTeachers() {
         List<String> data = service.getAllTeachers();
+        return new Response(data);
+    }
+
+    @GetMapping("/student")
+    public Response getAllCohorts() {
+        List<String> data = service.getAllCohorts();
         return new Response(data);
     }
 }

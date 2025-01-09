@@ -1,12 +1,6 @@
 package com.github.rayinfinite.scheduler.controller;
 
-import static org.mockito.Mockito.when;
-
 import com.github.rayinfinite.scheduler.service.AppService;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +18,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.result.StatusResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = {AppController.class})
 @ExtendWith(SpringExtension.class)
@@ -66,7 +65,7 @@ class AppControllerDiffblueTest {
     @DisplayName("Test getData(String, String, List)")
     void testGetData() throws Exception {
         // Arrange
-        when(appService.findByCourseDateBetween(Mockito.any(), Mockito.any(),
+        when(appService.findByCourseDateBetween(Mockito.any(), Mockito.any(), Mockito.any(),
                 Mockito.any()))
                 .thenReturn(new ArrayList<>());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/data")

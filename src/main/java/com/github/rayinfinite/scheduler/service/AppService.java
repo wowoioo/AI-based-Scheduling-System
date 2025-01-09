@@ -61,7 +61,7 @@ public class AppService {
         log.info("{} Data saved to database", result.size());
     }
 
-    public List<Course> findByCourseDateBetween(String startDate, String endDate, List<String> teachers) throws ParseException {
+    public List<Course> findByCourseDateBetween(String startDate, String endDate, List<String> teachers, List<String> cohorts) throws ParseException {
         Date start = formatter.parse(startDate);
         Date end = formatter.parse(endDate);
         List<Course> data = courseRepository.findByCourseDateBetween(start, end);
@@ -69,6 +69,9 @@ public class AppService {
             data.removeIf(inputData -> !teachers.contains(inputData.getTeacher1())
                     && !teachers.contains(inputData.getTeacher2())
                     && !teachers.contains(inputData.getTeacher3()));
+        }
+        if(cohorts != null && !cohorts.isEmpty()) {
+            data.removeIf(inputData -> !cohorts.contains(inputData.getCohort()));
         }
         return data;
     }
@@ -80,5 +83,9 @@ public class AppService {
         list.addAll(courseRepository.findTeacher3());
         return list.stream().filter(Objects::nonNull).filter(s -> !s.isEmpty())
                 .distinct().sorted().toList();
+    }
+
+    public List<String> getAllCohorts() {
+        return courseRepository.findCohort();
     }
 }

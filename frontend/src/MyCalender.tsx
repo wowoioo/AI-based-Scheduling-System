@@ -77,8 +77,9 @@ const MyCalendar: React.FC = () => {
   const calendarRef = useRef<FullCalendar | null>(null);
   const [calendarApi, setCalendarApi] = useState<CalendarApi>();
   const [events, setEvents] = useState<EventApi[]>([]);
-  const [teachers, setTeachers] = useState<string[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventApi | null>(null);
+  const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
+  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
 
   useEffect(() => {
     const calendarApi = calendarRef.current?.getApi();
@@ -115,19 +116,27 @@ const MyCalendar: React.FC = () => {
   const fetchEvents: EventSourceFunc = useCallback(
     async (fetchInfo, successCallback, failureCallback) => {
       try {
-        const data = await getCalenderData(fetchInfo, teachers);
+        const data = await getCalenderData(fetchInfo, selectedTeachers, selectedStudents);
         setEvents(data);
         successCallback(data);
       } catch (err) {
         failureCallback(err as Error);
       }
     },
-    [teachers]
+    [selectedTeachers, selectedStudents]
   );
 
   return (
     <div>
-      {calendarApi && <Header calendarApi={calendarApi} setTeachers={setTeachers} />}
+      {calendarApi && (
+        <Header
+          calendarApi={calendarApi}
+          selectedTeachers={selectedTeachers}
+          setSelectedTeachers={setSelectedTeachers}
+          selectedStudents={selectedStudents}
+          setSelectedStudents={setSelectedStudents}
+        />
+      )}
       <div>
         <FullCalendar
           ref={calendarRef}

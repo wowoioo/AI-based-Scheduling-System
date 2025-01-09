@@ -2,9 +2,14 @@ import { EventSourceFuncArg } from "@fullcalendar/core";
 
 export const ROOT_PATH = "http://localhost:9000";
 
-export async function getCalenderData(fetchInfo: EventSourceFuncArg, teachers: string[]) {
+export async function getCalenderData(fetchInfo: EventSourceFuncArg, teachers: string[], students: string[]) {
   const { startStr, endStr } = fetchInfo;
-  const params = new URLSearchParams({ startStr, endStr, teachers: teachers.join(",") }).toString();
+  const params = new URLSearchParams({
+    startStr,
+    endStr,
+    teachers: teachers.join(","),
+    students: students.join(","),
+  }).toString();
   return await fetch(`${ROOT_PATH}/data?${params}`)
     .then((response) => response.json())
     .then((data) => {
@@ -26,6 +31,15 @@ export async function getCalenderData(fetchInfo: EventSourceFuncArg, teachers: s
 
 export async function getAllTeachers() {
   return await fetch(`${ROOT_PATH}/teacher`)
+    .then((response) => response.json())
+    .then((data) => {
+      return data.data;
+    })
+    .catch((error) => console.error("Error:", error));
+}
+
+export async function getAllStudents() {
+  return await fetch(`${ROOT_PATH}/student`)
     .then((response) => response.json())
     .then((data) => {
       return data.data;

@@ -56,7 +56,7 @@ class AppControllerTest {
         course.setId(1);
         List<Course> courseList = List.of(course);
         
-        when(appService.findByCourseDateBetween(any(), any(), any()))
+        when(appService.findByCourseDateBetween(any(), any(), any(), any()))
             .thenReturn(courseList);
 
         mockMvc.perform(get("/data")

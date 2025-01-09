@@ -92,6 +92,7 @@ class AppServiceTest {
         List<Course> result1 = appService.findByCourseDateBetween(
             "2024-03-20T00:00:00+08:00",
             "2024-03-21T00:00:00+08:00",
+            null,
             null
         );
         assertThat(result1).hasSize(2);
@@ -100,7 +101,8 @@ class AppServiceTest {
         List<Course> result2 = appService.findByCourseDateBetween(
             "2024-03-20T00:00:00+08:00",
             "2024-03-21T00:00:00+08:00",
-            Arrays.asList("Teacher1")
+            Arrays.asList("Teacher1"),
+            null
         );
         assertThat(result2).hasSize(1);
     }
@@ -134,19 +136,19 @@ class AppServiceTest {
         public static byte[] createTestExcel() throws IOException {
             try (XSSFWorkbook workbook = new XSSFWorkbook()) {
                 XSSFSheet sheet = workbook.createSheet("Sheet1");
-                
+
                 // 创建表头
                 Row headerRow = sheet.createRow(0);
                 headerRow.createCell(0).setCellValue("Course Code");
                 headerRow.createCell(1).setCellValue("Course Name");
                 headerRow.createCell(2).setCellValue("Duration");
-                
+
                 // 创建数据行
                 Row dataRow = sheet.createRow(1);
                 dataRow.createCell(0).setCellValue("CS101");
                 dataRow.createCell(1).setCellValue("Intro to CS");
                 dataRow.createCell(2).setCellValue(120);
-                
+
                 // 写入到字节数组
                 try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
                     workbook.write(bos);

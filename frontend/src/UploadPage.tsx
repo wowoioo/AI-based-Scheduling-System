@@ -42,7 +42,7 @@ const UploadPage: React.FC = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="my-3" onClick={showDrawer}>
+        <Button onClick={showDrawer}>
           Login & Input Course Data
         </Button>
       </SheetTrigger>

@@ -18,4 +18,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     @Query("SELECT DISTINCT teacher3 FROM Course")
     List<String> findTeacher3();
+
+    @Query("SELECT DISTINCT cohort FROM Course")
+    List<String> findCohort();
 }
