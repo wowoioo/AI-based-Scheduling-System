@@ -46,7 +46,7 @@ public class AppController {
     }
 
     @PostMapping("/classroom")
-    public Response updateClassroom(Classroom classroom) {
+    public Response updateClassroom(@RequestBody Classroom classroom) {
         var result = service.updateClassroom(classroom);
         return new Response(result);
     }
@@ -57,9 +57,9 @@ public class AppController {
         return new Response(result);
     }
 
-    @GetMapping("/schedule")
-    public Response getSchedule() {
-        service.gjap();
-        return new Response("success");
-    }
+//    @GetMapping("/schedule")
+//    public Response getSchedule() {
+//        service.gjap();
+//        return new Response("success");
+//    }
 }

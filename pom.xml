@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.0</version>
+        <version>3.4.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.github.rayinfinite</groupId>
@@ -85,31 +85,11 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-
-
         <!-- https://mvnrepository.com/artifact/net.sf.jgap/jgap -->
         <dependency>
-            <groupId>net.sf.jgap</groupId>
+            <groupId>io.github.rayinfinite</groupId>
             <artifactId>jgap</artifactId>
-            <version>3.4.4</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>xercesImpl</artifactId>
-                    <groupId>xerces</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>commons-lang</artifactId>
-                    <groupId>commons-lang</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>commons-cli</artifactId>
-                    <groupId>commons-cli</groupId>
-                </exclusion>
-            </exclusions>
+            <version>3.6.4</version>
         </dependency>
     </dependencies>
 
