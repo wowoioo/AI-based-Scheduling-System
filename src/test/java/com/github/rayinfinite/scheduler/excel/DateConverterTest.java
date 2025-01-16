@@ -1,13 +1,11 @@
 package com.github.rayinfinite.scheduler.excel;
 
-import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.metadata.CellData;
-import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,58 +14,91 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class DateConverterTest {
 
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy/M/d");
+    private static final ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault();
 
     @Test
-    void testConvertToJavaData_number() {
+    void testConvertToJavaData_number_2024() {
         DateConverter converter = new DateConverter();
-        ReadConverterContext<Date> context = Mockito.mock(ReadConverterContext.class);
-        CellData cellData = Mockito.mock(CellData.class);
-        Mockito.when(context.getReadCellData()).thenReturn(cellData);
-        Mockito.when(cellData.getType()).thenReturn(CellData.Type.NUMBER);
-        Mockito.when(cellData.getNumberValue()).thenReturn(new java.math.BigDecimal(43831)); // Example: 2020-01-01
-        Date date = converter.convertToJavaData(context);
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2020, Calendar.JANUARY, 1);
-        Date expectedDate = calendar.getTime();
+        // 2024-01-01 对应的 Excel 数字是 44927
+        Date date = converter.convertToJavaData(TestReadConverterContext.of(44927));
+
+        LocalDate localDate = LocalDate.of(2024, 1, 1);
+        Date expectedDate = Date.from(localDate.atStartOfDay(DEFAULT_ZONE_ID).toInstant());
 
         assertEquals(formatter.format(expectedDate), formatter.format(date));
     }
 
     @Test
-    void testConvertToJavaData_string() throws java.text.ParseException {
+    void testConvertToJavaData_string_2024() throws ParseException {
         DateConverter converter = new DateConverter();
-        ReadConverterContext<Date> context = Mockito.mock(ReadConverterContext.class);
-        CellData cellData = Mockito.mock(CellData.class);
-        Mockito.when(context.getReadCellData()).thenReturn(cellData);
-        Mockito.when(cellData.getType()).thenReturn(CellData.Type.STRING);
-        Mockito.when(cellData.getStringValue()).thenReturn("2024/1/1");
-        Date date = converter.convertToJavaData(context);
-        Date expectedDate = formatter.parse("2024/1/1");
+        Date date = converter.convertToJavaData(TestReadConverterContext.of("2024/10/26"));
+        Date expectedDate = formatter.parse("2024/10/26");
         assertEquals(expectedDate, date);
     }
 
     @Test
     void testConvertToJavaData_nullString() {
         DateConverter converter = new DateConverter();
-        ReadConverterContext<Date> context = Mockito.mock(ReadConverterContext.class);
-        CellData cellData = Mockito.mock(CellData.class);
-        Mockito.when(context.getReadCellData()).thenReturn(cellData);
-        Mockito.when(cellData.getType()).thenReturn(CellData.Type.STRING);
-        Mockito.when(cellData.getStringValue()).thenReturn(null);
-        Date date = converter.convertToJavaData(context);
+        Date date = converter.convertToJavaData(TestReadConverterContext.of(null));
         assertNull(date);
     }
 
     @Test
     void testConvertToJavaData_blankString() {
         DateConverter converter = new DateConverter();
-        ReadConverterContext<Date> context = Mockito.mock(ReadConverterContext.class);
-        CellData cellData = Mockito.mock(CellData.class);
-        Mockito.when(context.getReadCellData()).thenReturn(cellData);
-        Mockito.when(cellData.getType()).thenReturn(CellData.Type.STRING);
-        Mockito.when(cellData.getStringValue()).thenReturn(" ");
-        Date date = converter.convertToJavaData(context);
+        Date date = converter.convertToJavaData(TestReadConverterContext.of(" "));
         assertNull(date);
+    }
+
+    @Test
+    void testConvertToJavaData_wrongFormat() {
+        DateConverter converter = new DateConverter();
+        Date date = converter.convertToJavaData(TestReadConverterContext.of("2024-10-26")); // 错误的格式
+        assertNull(date);
+    }
+
+    // 辅助类，简化测试
+    private static class TestReadConverterContext {
+        private final Object value;
+
+        private TestReadConverterContext(Object value) {
+            this.value = value;
+        }
+
+        public static com.alibaba.excel.converters.ReadConverterContext<?> of(Object value) {
+            return new com.alibaba.excel.converters.ReadConverterContext<Object>() {
+                @Override
+                public com.alibaba.excel.metadata.data.ReadCellData<?> getReadCellData() {
+                    return new com.alibaba.excel.metadata.data.ReadCellData<Object>() {
+                        @Override
+                        public Object getValue() {
+                            return value;
+                        }
+
+                        @Override
+                        public com.alibaba.excel.metadata.data.CellData.Type getType() {
+                            if (value == null) {
+                                return com.alibaba.excel.metadata.data.CellData.Type.EMPTY;
+                            } else if (value instanceof Number) {
+                                return com.alibaba.excel.metadata.data.CellData.Type.NUMBER;
+                            } else {
+                                return com.alibaba.excel.metadata.data.CellData.Type.STRING;
+                            }
+                        }
+
+                        @Override
+                        public java.math.BigDecimal getNumberValue() {
+                            return value instanceof Number ? new java.math.BigDecimal(value.toString()) : null;
+                        }
+
+                        @Override
+                        public String getStringValue() {
+                            return value != null ? value.toString() : null;
+                        }
+                    };
+                }
+            };
+        }
     }
 }
