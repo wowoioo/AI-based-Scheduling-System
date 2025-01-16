@@ -1,11 +1,16 @@
 package com.github.rayinfinite.scheduler.excel;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.annotation.ExcelProperty;
+import lombok.Data;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,7 +47,7 @@ public class EntityExcelIntegrationTest {
         assertEquals(1, data.getCohortId());
         assertEquals("Cohort1", data.getCohort());
         assertEquals(1, data.getRun());
-        assertEquals("Lecturer1", data.getTeacher1());
+        assertEquals("Lecturer9", data.getTeaching1());
         assertEquals("Lecturer1", data.getManager());
         assertEquals("Grad Cert 1", data.getCert());
         assertEquals(1, data.getProfessorNum());
@@ -71,7 +76,7 @@ public class EntityExcelIntegrationTest {
         @ExcelProperty(value = "Run", converter = IntegerConverter.class)
         private Integer run;
         @ExcelProperty("Teaching 1")
-        private String teacher1;
+        private String teaching1;
         @ExcelProperty("Manager")
         private String manager;
         @ExcelProperty("Cert")
@@ -87,9 +92,7 @@ public class EntityExcelIntegrationTest {
         @ExcelProperty(value = "timeslot", converter = DateConverter.class)
         private Date courseDate;
     }
-}
 
-    // 用于测试的数据类
     @lombok.Data
     public static class TestData {
         private String name;
@@ -97,3 +100,7 @@ public class EntityExcelIntegrationTest {
         private String date;
     }
 }
+
+
+
+

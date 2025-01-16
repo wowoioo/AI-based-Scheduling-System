@@ -49,9 +49,9 @@ public class IntegerConverterTest {
         assertNull(result);
     }
 
-
-    // 辅助类，简化测试
+    // 辅助类，简化测试 (与之前相同)
     private static class TestReadConverterContext {
+        // ... (与之前相同)
         private final Object value;
 
         private TestReadConverterContext(Object value) {

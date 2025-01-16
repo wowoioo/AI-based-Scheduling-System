@@ -2,10 +2,9 @@ package com.github.rayinfinite.scheduler.excel;
 
 import org.junit.jupiter.api.Test;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class DateConverterTest {
 
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy/M/d");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/M/d");
     private static final ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault();
 
     @Test
@@ -30,11 +29,11 @@ public class DateConverterTest {
     }
 
     @Test
-    void testConvertToJavaData_string_2024() throws ParseException {
+    void testConvertToJavaData_string_2024() {
         DateConverter converter = new DateConverter();
         Date date = converter.convertToJavaData(TestReadConverterContext.of("2024/10/26"));
-        Date expectedDate = formatter.parse("2024/10/26");
-        assertEquals(expectedDate, date);
+        LocalDate expectedDate = LocalDate.parse("2024/10/26", formatter);
+        assertEquals(Date.from(expectedDate.atStartOfDay(DEFAULT_ZONE_ID).toInstant()), date);
     }
 
     @Test
@@ -58,8 +57,9 @@ public class DateConverterTest {
         assertNull(date);
     }
 
-    // 辅助类，简化测试
+    // 辅助类，简化测试 (与之前相同)
     private static class TestReadConverterContext {
+        // ... (与之前相同)
         private final Object value;
 
         private TestReadConverterContext(Object value) {
