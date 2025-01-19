@@ -1,5 +1,7 @@
 package com.github.rayinfinite.scheduler.controller;
 
+import com.github.rayinfinite.scheduler.utils.LoginUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +20,19 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/login")
+@RequiredArgsConstructor
 public class LoginController {
+    private final LoginUtil loginUtil;
+
     @GetMapping
-    public boolean login(Authentication authentication) {
-        return authentication != null;
+    public boolean login(@AuthenticationPrincipal OidcUser principal) {
+        if(principal != null){
+            Map<String, Object> claim = principal.getIdToken().getClaims();
+            String username = claim.get("name").toString();
+            String email = claim.get("preferred_username").toString();
+            loginUtil.checkLogin(username, email);
+        }
+        return principal != null;
     }
 
     @GetMapping("/user")
