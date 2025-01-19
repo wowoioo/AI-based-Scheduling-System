@@ -20,4 +20,4 @@ jobs:
           script: |
             cd /home/ubuntu
             chmod +x deploy.sh
-            sh deploy.sh
+            sudo sh deploy.sh
