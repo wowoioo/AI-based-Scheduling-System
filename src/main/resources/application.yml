@@ -8,8 +8,10 @@ spring:
       maximum-pool-size: 10
       minimum-idle: 5
       idle-timeout: 30000
-      max-lifetime: 1800000
-      connection-timeout: 30000
+      max-lifetime: 300000
+      connection-timeout: 20000
+      validation-timeout: 5000
+      keepalive-time: 300000 
   jpa:
     hibernate:
       ddl-auto: update
@@ -25,4 +27,3 @@ spring:
         credential:
           client-id: f3ee6226-fd8b-4cae-a9e7-f3c211b0970b
           client-secret:
-        post-logout-redirect-uri: http://localhost:9000

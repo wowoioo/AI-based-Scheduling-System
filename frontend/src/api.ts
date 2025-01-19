@@ -1,17 +1,20 @@
-import {EventSourceFuncArg} from "@fullcalendar/core";
+export const ROOT_PATH = process.env.NODE_ENV === "production" ? "" : "http://localhost:9000";
 
-export const ROOT_PATH = "";
-
-export async function getCalenderData(fetchInfo: EventSourceFuncArg, teachers: string[]) {
-  const { startStr, endStr } = fetchInfo;
-  const params = new URLSearchParams({ startStr, endStr, teachers: teachers.join(",") }).toString();
+export async function getCalenderData(startStr: string, endStr: string, teachers: string[], students: string[]) {
+  const params = new URLSearchParams({
+    startStr,
+    endStr,
+    teachers: teachers.join(","),
+    students: students.join(","),
+  }).toString();
   return await fetch(`${ROOT_PATH}/data?${params}`)
     .then((response) => response.json())
     .then((data) => {
-      let events = data.data;
+      const events = data.data;
       events.forEach((event: any) => {
         event.title = event.courseName;
-        let date = new Date(Number(event.courseDate));
+        event.resource = event.classroom;
+        const date = new Date(Number(event.courseDate));
         event.start = date.toISOString();
         event.end = date.toISOString();
         event.allDay = true;
@@ -32,3 +35,85 @@ export async function getAllTeachers() {
     })
     .catch((error) => console.error("Error:", error));
 }
+
+export async function getAllStudents() {
+  return await fetch(`${ROOT_PATH}/student`)
+    .then((response) => response.json())
+    .then((data) => {
+      return data.data;
+    })
+    .catch((error) => console.error("Error:", error));
+}
+
+export interface ClassroomType {
+  id: number;
+  name: string;
+  size: number;
+  software?: string | undefined;
+}
+
+export async function getClassroom(): Promise<ClassroomType[]> {
+  return await fetch(`${ROOT_PATH}/classroom`)
+    .then((response) => response.json())
+    .then((data) => {
+      return data.data;
+    })
+    .catch((error) => console.error("Error:", error));
+}
+
+export async function saveClassroom(data: ClassroomType) {
+  return await fetch(`${ROOT_PATH}/classroom`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data.data;
+    })
+    .catch((error) => console.error("Error:", error));
+}
+
+export async function deleteClassroom(id: number) {
+  return await fetch(`${ROOT_PATH}/classroom/${id}`, {
+    method: "DELETE",
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data.data;
+    })
+    .catch((error) => console.error("Error:", error));
+}
+
+export async function getUser(): Promise<boolean> {
+  return await fetch(`${ROOT_PATH}/login`)
+    .then((response) => response.json())
+    .catch((error) => console.error("Error:", error));
+}
+
+export async function getClassname(): Promise<string[]> {
+  return await fetch(`${ROOT_PATH}/classname`)
+    .then((response) => response.json())
+    .then((data) => {
+      return data.data;
+    })
+    .catch((error) => console.error("Error:", error));
+}
+
+export const uploadExcel = async (file: File) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetch(`${ROOT_PATH}/upload`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("Upload failed");
+  }
+
+  return response.json();
+};

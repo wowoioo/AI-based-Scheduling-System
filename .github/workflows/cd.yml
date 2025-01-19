@@ -1,0 +1,23 @@
+name: Project CD with Docker
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+
+jobs:
+  manual-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Stop and rerun docker container
+        uses: appleboy/ssh-action@7eaf76671a0d7eec5d98ee897acda4f968735a17 #v1.2.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            cd /home/ubuntu
+            chmod +x deploy.sh
+            sh deploy.sh
