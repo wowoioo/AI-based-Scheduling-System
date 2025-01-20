@@ -5,6 +5,7 @@ import com.github.rayinfinite.scheduler.entity.Response;
 import com.github.rayinfinite.scheduler.service.AppService;
 import com.github.rayinfinite.scheduler.service.ClassroomService;
 import com.github.rayinfinite.scheduler.utils.LoginUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,6 +35,12 @@ public class AppController {
     public Response getExcel(MultipartFile file) throws IOException {
         String result = service.upload(file);
         return Response.builder().data(result).build();
+    }
+
+    @GetMapping("/download")
+    public void downloadExcel(HttpServletResponse response, @AuthenticationPrincipal OidcUser principal) throws IOException {
+        loginUtil.log("GET /download", null, principal);
+        service.downloadExcel(response);
     }
 
     @GetMapping("/data")

@@ -129,3 +129,29 @@ export const uploadExcel = async (file: File) => {
 
   return response.json();
 };
+
+export const downloadExcel = async () => {
+  const response = await fetch(`${ROOT_PATH}/download`, {
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    throw new Error("Download failed");
+  }
+
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "Course.xlsx";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(url);
+};
+
+export async function getUserToken() {
+  return await fetch(`${ROOT_PATH}/login/token_details`)
+    .then((response) => response.json())
+    .catch((error) => console.error("Error:", error));
+}

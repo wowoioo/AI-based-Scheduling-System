@@ -1,10 +1,11 @@
 import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { getUser, ROOT_PATH, uploadExcel } from "./api";
+import { downloadExcel, uploadExcel } from "./api";
 import ClassroomTable from "./ClassroomTable";
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Separator } from "./components/ui/separator";
 import { Input } from "./components/ui/input";
+import { Download } from "lucide-react";
 
 const UploadExcel: React.FC = () => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,7 +21,21 @@ const UploadExcel: React.FC = () => {
     }
   };
 
-  return <Input type="file" accept=".xlsx,.xls" onChange={handleFileChange} className="cursor-pointer" />;
+  return (
+    <div>
+      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" htmlFor="file_input">
+        Upload Excel
+      </label>
+      <Input
+        id="file_input"
+        type="file"
+        name="Course Excel"
+        accept=".xlsx,.xls"
+        onChange={handleFileChange}
+        className="cursor-pointer"
+      />
+    </div>
+  );
 };
 
 const UploadPage: React.FC = () => {
@@ -32,33 +47,39 @@ const UploadPage: React.FC = () => {
     }
   };
 
-  const showDrawer = async () => {
-    const data = await getUser();
-    if (!data) {
-      window.location.href = `${ROOT_PATH}/oauth2/authorization/azure`;
+  const downloadFile = async () => {
+    try {
+      await downloadExcel();
+    } catch (error) {
+      console.error("Download failed:", error);
+      alert("Download failed");
     }
   };
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button onClick={showDrawer}>
-          Login & Input Course Data
-        </Button>
-      </SheetTrigger>
-      <SheetContent className="w-[640px] max-w-full sm:max-w-[640px] gap-4 flex flex-col">
-        <SheetHeader>
-          <SheetTitle>Input Course Data</SheetTitle>
-        </SheetHeader>
-        <Separator />
-        <div className="flex flex-row w-full gap-4">
-          <UploadExcel />
-          <Button onClick={handleAddRow}>Add new classroom</Button>
-          <SheetDescription />
-        </div>
-        <ClassroomTable ref={classroomTableRef} />
-      </SheetContent>
-    </Sheet>
+    <div className="flex flex-row items-end gap-4">
+      <UploadExcel />
+      <Button onClick={downloadFile}>
+        <Download />
+        Export Excel
+      </Button>
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button>Classroom Config</Button>
+        </SheetTrigger>
+        <SheetContent className="w-[640px] max-w-full sm:max-w-[640px] gap-4 flex flex-col">
+          <SheetHeader>
+            <SheetTitle>Classroom Information</SheetTitle>
+          </SheetHeader>
+          <Separator />
+          <div className="flex flex-row w-full gap-4">
+            <Button onClick={handleAddRow}>Add new classroom</Button>
+            <SheetDescription />
+          </div>
+          <ClassroomTable ref={classroomTableRef} />
+        </SheetContent>
+      </Sheet>
+    </div>
   );
 };
 

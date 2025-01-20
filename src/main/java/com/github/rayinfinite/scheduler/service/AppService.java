@@ -5,11 +5,14 @@ import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.github.rayinfinite.scheduler.entity.Cohort;
 import com.github.rayinfinite.scheduler.entity.Course;
+import com.github.rayinfinite.scheduler.entity.OutputData;
 import com.github.rayinfinite.scheduler.entity.Timeslot;
 import com.github.rayinfinite.scheduler.excel.BaseExcelReader;
 import com.github.rayinfinite.scheduler.repository.CourseRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,6 +62,22 @@ public class AppService {
         courseRepository.deleteAll();
         courseRepository.saveAll(result);
         log.info("{} Data saved to database", result.size());
+    }
+
+    public void downloadExcel(HttpServletResponse response) throws IOException {
+        String fileName = "Course";
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+
+        List<Course> courseList = courseRepository.findAll();
+        List<OutputData> outputDataList = new ArrayList<>();
+        for(Course course : courseList) {
+            OutputData output = new OutputData();
+            BeanUtils.copyProperties(course, output);
+            outputDataList.add(output);
+        }
+        EasyExcel.write(response.getOutputStream(), OutputData.class).sheet("Course").doWrite(outputDataList);
     }
 
     public List<Course> findByCourseDateBetween(String startDate, String endDate, List<String> teachers, List<String> cohorts) throws ParseException {
