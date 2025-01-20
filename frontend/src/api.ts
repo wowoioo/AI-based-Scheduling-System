@@ -1,5 +1,10 @@
 export const ROOT_PATH = process.env.NODE_ENV === "production" ? "" : "http://localhost:9000";
 
+const getCsrfToken = () => {
+  const csrfToken = document.cookie.match("(^|;)\\s*XSRF-TOKEN\\s*=\\s*([^;]+)")?.pop();
+  return csrfToken || "";
+};
+
 export async function getCalenderData(startStr: string, endStr: string, teachers: string[], students: string[]) {
   const params = new URLSearchParams({
     startStr,
@@ -64,9 +69,10 @@ export async function getClassroom(): Promise<ClassroomType[]> {
 export async function saveClassroom(data: ClassroomType) {
   return await fetch(`${ROOT_PATH}/classroom`, {
     method: "POST",
-    headers: {
+    headers: new Headers({
       "Content-Type": "application/json",
-    },
+      "X-XSRF-Token": getCsrfToken(),
+    }),
     body: JSON.stringify(data),
   })
     .then((response) => response.json())
@@ -79,6 +85,9 @@ export async function saveClassroom(data: ClassroomType) {
 export async function deleteClassroom(id: number) {
   return await fetch(`${ROOT_PATH}/classroom/${id}`, {
     method: "DELETE",
+    headers: new Headers({
+      "X-XSRF-Token": getCsrfToken(),
+    }),
   })
     .then((response) => response.json())
     .then((data) => {
@@ -108,6 +117,9 @@ export const uploadExcel = async (file: File) => {
 
   const response = await fetch(`${ROOT_PATH}/upload`, {
     method: "POST",
+    headers: new Headers({
+      "X-XSRF-Token": getCsrfToken(),
+    }),
     body: formData,
   });
 
