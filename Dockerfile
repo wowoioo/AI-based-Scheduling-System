@@ -17,4 +17,4 @@ ENV SERVER_PORT=9000
 WORKDIR /app
 COPY $NAME /app/app.jar
 EXPOSE $SERVER_PORT
-ENTRYPOINT ["sh", "-c", "java -jar /app/app.jar ${JAVA_OPTS} --spring.cloud.azure.active-directory.credential.client-secret=${AZURE_SECRET}"]
+ENTRYPOINT ["sh", "-c", "java -jar /app/app.jar ${JAVA_OPTS} --spring.security.oauth2.client.registration.azure.client-secret=${AZURE_SECRET}"]

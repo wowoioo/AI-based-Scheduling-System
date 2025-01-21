@@ -1,12 +1,12 @@
 package com.github.rayinfinite.scheduler.config.security;
 
-import com.azure.spring.cloud.autoconfigure.implementation.aad.security.AadWebApplicationHttpSecurityConfigurer;
 import com.github.rayinfinite.scheduler.config.CorsConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -60,7 +60,7 @@ public class SpringSecurityConfig {
         String[] protectedPaths = {"/classroom", "/upload"};
         commonHttpSetting(http);
         http.cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()));
-        http.apply(AadWebApplicationHttpSecurityConfigurer.aadWebApplication());
+        http.oauth2Login(Customizer.withDefaults());
         http.securityMatcher("**").authorizeHttpRequests(authorize ->
                 authorize.requestMatchers(protectedPaths).authenticated().anyRequest().permitAll());
         return http.build();
