@@ -5,6 +5,24 @@ const getCsrfToken = () => {
   return csrfToken || "";
 };
 
+export default function request(url: string, options: RequestInit = {}) {
+  return fetch(url, {
+    ...options,
+    headers: {
+      ...options.headers,
+      "Content-Type": "application/json",
+      "X-XSRF-Token": getCsrfToken(),
+      Authorization: `Bearer ${localStorage.getItem("token")}` || "",
+    },
+  })
+    .then((response) => {
+      if (response.status == 401) {
+        window.location.href = `${ROOT_PATH}/oauth2/authorization/azure`;
+      }
+      return response;
+    });
+}
+
 export async function getCalenderData(startStr: string, endStr: string, teachers: string[], students: string[]) {
   const params = new URLSearchParams({
     startStr,
@@ -12,7 +30,7 @@ export async function getCalenderData(startStr: string, endStr: string, teachers
     teachers: teachers.join(","),
     students: students.join(","),
   }).toString();
-  return await fetch(`${ROOT_PATH}/data?${params}`)
+  return await request(`${ROOT_PATH}/data?${params}`)
     .then((response) => response.json())
     .then((data) => {
       const events = data.data;
@@ -33,7 +51,7 @@ export async function getCalenderData(startStr: string, endStr: string, teachers
 }
 
 export async function getAllTeachers() {
-  return await fetch(`${ROOT_PATH}/teacher`)
+  return await request(`${ROOT_PATH}/teacher`)
     .then((response) => response.json())
     .then((data) => {
       return data.data;
@@ -42,7 +60,7 @@ export async function getAllTeachers() {
 }
 
 export async function getAllStudents() {
-  return await fetch(`${ROOT_PATH}/student`)
+  return await request(`${ROOT_PATH}/student`)
     .then((response) => response.json())
     .then((data) => {
       return data.data;
@@ -58,7 +76,7 @@ export interface ClassroomType {
 }
 
 export async function getClassroom(): Promise<ClassroomType[]> {
-  return await fetch(`${ROOT_PATH}/classroom`)
+  return await request(`${ROOT_PATH}/classroom`)
     .then((response) => response.json())
     .then((data) => {
       return data.data;
@@ -67,12 +85,8 @@ export async function getClassroom(): Promise<ClassroomType[]> {
 }
 
 export async function saveClassroom(data: ClassroomType) {
-  return await fetch(`${ROOT_PATH}/classroom`, {
+  return await request(`${ROOT_PATH}/classroom`, {
     method: "POST",
-    headers: new Headers({
-      "Content-Type": "application/json",
-      "X-XSRF-Token": getCsrfToken(),
-    }),
     body: JSON.stringify(data),
   })
     .then((response) => response.json())
@@ -83,11 +97,8 @@ export async function saveClassroom(data: ClassroomType) {
 }
 
 export async function deleteClassroom(id: number) {
-  return await fetch(`${ROOT_PATH}/classroom/${id}`, {
+  return await request(`${ROOT_PATH}/classroom/${id}`, {
     method: "DELETE",
-    headers: new Headers({
-      "X-XSRF-Token": getCsrfToken(),
-    }),
   })
     .then((response) => response.json())
     .then((data) => {
@@ -96,14 +107,8 @@ export async function deleteClassroom(id: number) {
     .catch((error) => console.error("Error:", error));
 }
 
-export async function getUser(): Promise<boolean> {
-  return await fetch(`${ROOT_PATH}/login`)
-    .then((response) => response.json())
-    .catch((error) => console.error("Error:", error));
-}
-
 export async function getClassname(): Promise<string[]> {
-  return await fetch(`${ROOT_PATH}/classname`)
+  return await request(`${ROOT_PATH}/classname`)
     .then((response) => response.json())
     .then((data) => {
       return data.data;
@@ -115,11 +120,8 @@ export const uploadExcel = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await fetch(`${ROOT_PATH}/upload`, {
+  const response = await request(`${ROOT_PATH}/upload`, {
     method: "POST",
-    headers: new Headers({
-      "X-XSRF-Token": getCsrfToken(),
-    }),
     body: formData,
   });
 
@@ -131,9 +133,7 @@ export const uploadExcel = async (file: File) => {
 };
 
 export const downloadExcel = async () => {
-  const response = await fetch(`${ROOT_PATH}/download`, {
-    method: "GET",
-  });
+  const response = await request(`${ROOT_PATH}/download`);
 
   if (!response.ok) {
     throw new Error("Download failed");
@@ -150,8 +150,23 @@ export const downloadExcel = async () => {
   window.URL.revokeObjectURL(url);
 };
 
+export async function getUser(): Promise<boolean> {
+  return await fetch(`${ROOT_PATH}/login`)
+    .then((response) => response.json())
+    .catch((error) => console.error("Error:", error));
+}
+
 export async function getUserToken() {
   return await fetch(`${ROOT_PATH}/login/token_details`)
     .then((response) => response.json())
+    .catch((error) => console.error("Error:", error));
+}
+
+export async function getJwtToken() {
+  return await fetch(`${ROOT_PATH}/login/jwt`)
+    .then((response) => response.json())
+    .then((data) => {
+      localStorage.setItem("token", data.data);
+    })
     .catch((error) => console.error("Error:", error));
 }

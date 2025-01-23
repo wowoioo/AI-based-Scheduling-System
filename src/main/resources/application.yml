@@ -9,7 +9,7 @@ spring:
       minimum-idle: 5
       idle-timeout: 30000
       max-lifetime: 300000
-      connection-timeout: 20000
+      connection-timeout: 5000
       validation-timeout: 5000
       keepalive-time: 300000
   jpa:
@@ -19,9 +19,12 @@ spring:
   security.oauth2.client:
     provider:
       azure:
+#        https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration
+#        issuer-uri: https://login.microsoftonline.com/common/v2.0
         authorization-uri: https://login.microsoftonline.com/common/oauth2/v2.0/authorize
         token-uri: https://login.microsoftonline.com/common/oauth2/v2.0/token
         jwk-set-uri: https://login.microsoftonline.com/common/discovery/v2.0/keys
+        user-info-uri: https://graph.microsoft.com/oidc/userinfo
         user-name-attribute: name
     registration:
       azure:
