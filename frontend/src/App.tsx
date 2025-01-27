@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import MyRayCalendar from "./MyRayCalendar";
 import UploadPage from "./UploadPage";
 import { Button } from "./components/ui/button";
-import { getUser, getUserToken, ROOT_PATH } from "./api";
+import { getJwtToken, getUser, getUserToken, ROOT_PATH } from "./api";
 import { LogIn } from "lucide-react";
 
 function App() {
@@ -10,12 +10,18 @@ function App() {
   const [name, setName] = useState<string>("");
 
   useEffect(() => {
-    getUser().then((data) => setData(data));
+    getUser().then((data) => {
+      setData(data);
+      getJwtToken();
+    });
   }, []);
 
   useEffect(() => {
     if (data) {
-      getUserToken().then((token) => setName(token.name));
+      getUserToken().then((token) => {
+        setName(token.name);
+        getJwtToken();
+      });
     }
   }, [data]);
 
@@ -23,6 +29,8 @@ function App() {
     const data = await getUser();
     if (!data) {
       window.location.href = `${ROOT_PATH}/oauth2/authorization/azure`;
+    }else{
+      getJwtToken();
     }
   };
 
