@@ -89,7 +89,7 @@ public class GAService {
     public List<Course> getSchedule(Timetable timetable) {
         // 初始化 GA
         int maxGenerations = 1000;
-        GA ga = new GA(100, 0.001, 0.98, 1, 5);
+        GA ga = new GA(100, 0.01, 0.7, 1, 5);
         Population population = ga.initPopulation(timetable);
         int generation = 1;
 
@@ -104,7 +104,22 @@ public class GAService {
         timetable.createPlans(population.getFittest(0));
         log.info("Solution found in {} generations", generation);
         log.info("Final solution fitness: {}", population.getFittest(0).getFitness());
-        log.info("Clashes: {}", timetable.calcClashes());
+//        log.info("Clashes: {}", timetable.calcClashes());
+
+        Map<String, Object> clashes = timetable.calcClashes();
+        for (Map.Entry<String, Object> entry : clashes.entrySet()) {
+            String clashType = entry.getKey();
+            List<TeachingPlan> clashPlans = (List<TeachingPlan>) entry.getValue();
+
+            // 打印冲突类型和对应的冲突计划数量
+            log.info("{}: {} clashes", clashType, clashPlans.size());
+
+            // 打印每个冲突的详细信息
+            for (TeachingPlan plan : clashPlans) {
+                log.info("  - Clash Plan ID: {}, Room ID: {}, Timeslot ID: {}",
+                        plan.getPlanId(), plan.getRoomId(), plan.getTimeslotId());
+            }
+        }
 
         List<Course> courseList = new ArrayList<>();
 
