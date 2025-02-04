@@ -5,14 +5,14 @@ import com.github.rayinfinite.scheduler.ga_course.TeachingPlan;
 import com.github.rayinfinite.scheduler.ga_course.Timetable;
 import com.github.rayinfinite.scheduler.ga_course.config.GA;
 import com.github.rayinfinite.scheduler.ga_course.config.Population;
+import com.github.rayinfinite.scheduler.utils.PublicHoliday;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -23,9 +23,10 @@ import java.util.stream.Stream;
 public class GAService {
     public List<Course> gap(List<Course> courseList, List<Cohort> cohortList, List<Timeslot> timeslotList,
                             List<Classroom> classroomList) {
+        List<Timeslot> filtedTimeslotList = timeslotList.stream().filter(this::checkTimeslot).toList();
         IntStream.range(0, courseList.size()).forEach(i -> courseList.get(i).setId(i));
         IntStream.range(0, cohortList.size()).forEach(i -> cohortList.get(i).setId(i));
-        IntStream.range(0, timeslotList.size()).forEach(i -> timeslotList.get(i).setId(i));
+        IntStream.range(0, filtedTimeslotList.size()).forEach(i -> filtedTimeslotList.get(i).setId(i));
         Map<String, List<Course>> cohortCourses = courseList.stream().collect(Collectors.groupingBy(Course::getCohort));
         for (Cohort cohort : cohortList) {
             if (cohortCourses.containsKey(cohort.getName())) {
@@ -39,12 +40,18 @@ public class GAService {
         var teacherMap = getProfessorMap(courseList);
         var courseMap = createMap(courseList, Course::getId);
         var cohortMap = createMap(cohortList, Cohort::getId);
-        var timeslotMap = createMap(timeslotList, Timeslot::getId);
+        var timeslotMap = createMap(filtedTimeslotList, Timeslot::getId);
         var classroomMap = createMap(classroomList, Classroom::getId);
         setCourseCohortId(courseList, cohortMap);
 
         Timetable timetable = new Timetable(courseMap, cohortMap, timeslotMap, classroomMap, teacherMap);
         return getSchedule(timetable);
+    }
+
+    public boolean checkTimeslot(Timeslot timeslot) {
+        Date date = timeslot.getDate();
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return !PublicHoliday.isPublicHoliday(localDate);
     }
 
     private <T> Map<Integer, T> createMap(List<T> list, Function<T, Integer> keyExtractor) {

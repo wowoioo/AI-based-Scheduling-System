@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://43.134.166.185:5432/scheduler
+    url: jdbc:postgresql://${DB_HOST:43.134.166.185}:${DB_PORT:5432}/${DB_NAME:scheduler}
     driverClassName: org.postgresql.Driver
-    username: postgres
-    password: Wasd2333
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:Wasd2333}
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
@@ -37,3 +37,4 @@ spring:
           - openid
           - profile
           - offline_access
+success-url: http://localhost:9000

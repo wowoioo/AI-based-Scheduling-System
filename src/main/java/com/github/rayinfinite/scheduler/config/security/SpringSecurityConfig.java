@@ -4,6 +4,7 @@ import com.github.rayinfinite.scheduler.config.CorsConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -23,6 +24,8 @@ import java.util.function.Supplier;
 public class SpringSecurityConfig {
     private final SecurityHandler securityHandler;
     private final CorsConfig corsConfig;
+    @Value("${success-url}")
+    private String successUrl;
 
     /**
      * 禁用不必要的默认filter，处理异常响应内容
@@ -34,7 +37,8 @@ public class SpringSecurityConfig {
         //    level:
         //       org.springframework.security: DEBUG
         // 表单登录/登出、session管理、csrf防护等默认配置，如果不disable。会默认创建默认filter
-        http.formLogin(AbstractHttpConfigurer::disable).httpBasic(AbstractHttpConfigurer::disable).logout(AbstractHttpConfigurer::disable).sessionManagement(AbstractHttpConfigurer::disable)
+        http.formLogin(AbstractHttpConfigurer::disable).httpBasic(AbstractHttpConfigurer::disable).sessionManagement(AbstractHttpConfigurer::disable)
+//                .logout(AbstractHttpConfigurer::disable)
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
@@ -60,7 +64,9 @@ public class SpringSecurityConfig {
         String[] protectedPaths = {"/classroom", "/upload"};
         commonHttpSetting(http);
         http.cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()));
-        http.oauth2Login(Customizer.withDefaults());
+        http.logout(Customizer.withDefaults());
+        http.oauth2Login(oauth2 -> oauth2.defaultSuccessUrl(successUrl, true));
+
         http.securityMatcher("**").authorizeHttpRequests(authorize ->
                 authorize.requestMatchers(protectedPaths).authenticated().anyRequest().permitAll());
         return http.build();
