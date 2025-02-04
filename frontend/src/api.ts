@@ -10,9 +10,8 @@ export default function request(url: string, options: RequestInit = {}) {
     ...options,
     headers: {
       ...options.headers,
-      "Content-Type": "application/json",
       "X-XSRF-Token": getCsrfToken(),
-      Authorization: `Bearer ${localStorage.getItem("token")}` || "",
+      Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
     },
   })
     .then((response) => {
