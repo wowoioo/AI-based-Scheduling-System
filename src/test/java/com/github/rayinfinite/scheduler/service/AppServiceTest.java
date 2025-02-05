@@ -15,7 +15,6 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -72,11 +71,11 @@ class AppServiceTest {
                 ExcelGenerator.createTestExcel()
         );
 
-        // 创建测试数据
-        Registration testRegistration = new Registration("cohort01", 30, "course01");
-        // 设置 mock 行为
-        List<Registration> registrations = new ArrayList<>();
-        registrations.add(testRegistration);
+//        // 创建测试数据
+//        Registration testRegistration = new Registration("cohort01", 30, "course01");
+//        // 设置 mock 行为
+//        List<Registration> registrations = new ArrayList<>();
+//        registrations.add(testRegistration);
 
         doNothing().when(gaService).updateRegistrations(any());
 
