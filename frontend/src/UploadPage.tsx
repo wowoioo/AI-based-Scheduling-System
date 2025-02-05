@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { downloadExcel, uploadExcel } from "./api";
+import {downloadExcel, uploadExcel, uploadResultExcel} from "./api";
 import ClassroomTable from "./ClassroomTable";
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Separator } from "./components/ui/separator";
@@ -32,9 +32,42 @@ const UploadExcel: React.FC = () => {
         name="Course Excel"
         accept=".xlsx,.xls"
         onChange={handleFileChange}
-        className="cursor-pointer"
+        // className="cursor-pointer"
+        className="file-input file-input-bordered w-full max-w-xs"
       />
     </div>
+  );
+};
+
+const UploadResultExcel: React.FC = () => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      await uploadResultExcel(file);
+      window.location.reload();
+    } catch (error) {
+      console.error("Upload failed:", error);
+      alert("Upload failed");
+    }
+  };
+
+  return (
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" htmlFor="file_input">
+          Result Upload
+        </label>
+        <Input
+            id="file_input"
+            type="file"
+            name="Result Excel"
+            accept=".xlsx,.xls"
+            onChange={handleFileChange}
+            // className="cursor-pointer"
+            className="file-input file-input-bordered w-full max-w-xs"
+        />
+      </div>
   );
 };
 
@@ -63,6 +96,7 @@ const UploadPage: React.FC = () => {
         <Download />
         Export Excel
       </Button>
+      <UploadResultExcel />
       <Sheet>
         <SheetTrigger asChild>
           <Button>Classroom Config</Button>

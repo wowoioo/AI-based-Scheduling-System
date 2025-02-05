@@ -6,12 +6,10 @@ import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.alibaba.excel.annotation.write.style.HeadStyle;
 import com.alibaba.excel.enums.BooleanEnum;
 import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @ColumnWidth(16)
 @HeadFontStyle(fontName = "Arial", fontHeightInPoints = 11, bold = BooleanEnum.TRUE)
@@ -30,10 +28,10 @@ public class ClashData {
     @ExcelProperty("Date")
     private String date;
 
-    public ClashData(String clashType, Integer size, String roomName, String date) {
-        this.clashType = clashType;
-        this.clashCount = size;
-        this.roomName = roomName;
-        this.date = date;
-    }
+//    public ClashData(String clashType, Integer size, String roomName, String date) {
+//        this.clashType = clashType;
+//        this.clashCount = size;
+//        this.roomName = roomName;
+//        this.date = date;
+//    }
 }

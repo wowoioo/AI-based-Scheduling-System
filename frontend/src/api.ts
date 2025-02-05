@@ -131,6 +131,22 @@ export const uploadExcel = async (file: File) => {
   return response.json();
 };
 
+export const uploadResultExcel = async (file: File) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await request(`${ROOT_PATH}/resultUpload`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("Upload failed");
+  }
+
+  return response.json();
+};
+
 export const downloadExcel = async () => {
   const response = await request(`${ROOT_PATH}/download`);
 

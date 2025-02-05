@@ -37,6 +37,17 @@ public class AppController {
         return Response.builder().data(result).build();
     }
 
+    @PostMapping("/resultUpload")
+    public Response getResultExcel(MultipartFile file, @AuthenticationPrincipal OidcUser principal) throws IOException {
+        loginUtil.log("POST /resultUpload", file.getOriginalFilename(), principal);
+        return getResultExcel(file);
+    }
+
+    public Response getResultExcel(MultipartFile file) throws IOException {
+        String result = service.detectionUpload(file);
+        return Response.builder().data(result).build();
+    }
+
     @GetMapping("/download")
     public void downloadExcel(HttpServletResponse response, @AuthenticationPrincipal OidcUser principal) throws IOException {
         loginUtil.log("GET /download", null, principal);

@@ -6,12 +6,10 @@ import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.alibaba.excel.annotation.write.style.HeadStyle;
 import com.alibaba.excel.enums.BooleanEnum;
 import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @ColumnWidth(16)
 @HeadFontStyle(fontName = "Arial", fontHeightInPoints = 11, bold = BooleanEnum.TRUE)
@@ -27,9 +25,4 @@ public class Registration {
     @ExcelProperty("Course Name")
     private String courseName;
 
-    public Registration(String cohort, int headcount, String courseName) {
-        this.cohort = cohort;
-        this.headcount = headcount;
-        this.courseName = courseName;
-    }
 }
