@@ -4,14 +4,12 @@ import com.github.rayinfinite.scheduler.entity.Response;
 import com.github.rayinfinite.scheduler.repository.ClassroomRepository;
 import com.github.rayinfinite.scheduler.service.AppService;
 import com.github.rayinfinite.scheduler.service.ClassroomService;
-import com.github.rayinfinite.scheduler.utils.LoginUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.aot.DisabledInAotMode;
@@ -47,20 +45,17 @@ class AppControllerDiffblueTest {
     @MockitoBean
     private ClassroomService classroomService;
 
-    @MockitoBean
-    private LoginUtil loginUtil;
-
     /**
-     * Test {@link AppController#getExcel(MultipartFile, OidcUser)} with
+     * Test {@link AppController#getExcel(MultipartFile)} with
      * {@code file}, {@code principal}.
      * <ul>
      *   <li>Then return Data is {@code Upload}.</li>
      * </ul>
      * <p>
-     * Method under test: {@link AppController#getExcel(MultipartFile, OidcUser)}
+     * Method under test: {@link AppController#getExcel(MultipartFile)}
      */
     @Test
-    @DisplayName("Test getExcel(MultipartFile, OidcUser) with 'file', 'principal'; then return Data is 'Upload'")
+    @DisplayName("Test getExcel(MultipartFile) with 'file', 'principal'; then return Data is 'Upload'")
     void testGetExcelWithFilePrincipal_thenReturnDataIsUpload() throws IOException {
         //   Diffblue Cover was unable to create a Spring-specific test for this Spring method.
         //   Run dcover create --keep-partial-tests to gain insights into why
@@ -69,20 +64,15 @@ class AppControllerDiffblueTest {
         // Arrange
         AppService service = mock(AppService.class);
         when(service.upload(Mockito.any())).thenReturn("Upload");
-        LoginUtil loginUtil = mock(LoginUtil.class);
-        doNothing().when(loginUtil).log(Mockito.any(), Mockito.any(), Mockito.any());
-        AppController appController = new AppController(service, new ClassroomService(mock(ClassroomRepository.class)),
-                loginUtil);
+        AppController appController = new AppController(service, new ClassroomService(mock(ClassroomRepository.class)));
         MultipartFile file = mock(MultipartFile.class);
         when(file.getOriginalFilename()).thenReturn("foo.txt");
 
         // Act
-        Response actualExcel = appController.getExcel(file, null);
+        Response actualExcel = appController.getExcel(file);
 
         // Assert
         verify(service).upload(isA(MultipartFile.class));
-        verify(loginUtil).log(eq("POST /upload"), eq("foo.txt"), isNull());
-        verify(file).getOriginalFilename();
         assertEquals("Upload", actualExcel.getData());
         assertNull(actualExcel.getCode());
         assertNull(actualExcel.getMessage());
@@ -187,9 +177,9 @@ class AppControllerDiffblueTest {
     }
 
     /**
-     * Test {@link AppController#getData(String, String, List)}.
+     * Test {@link AppController#getData(String, String, List, List)}.
      * <p>
-     * Method under test: {@link AppController#getData(String, String, List)}
+     * Method under test: {@link AppController#getData(String, String, List, List)}
      */
     @Test
     @DisplayName("Test getData(String, String, List)")

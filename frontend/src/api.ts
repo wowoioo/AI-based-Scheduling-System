@@ -6,10 +6,15 @@ const getCsrfToken = () => {
 };
 
 export default function request(url: string, options: RequestInit = {}) {
+  const headers: Record<string, string> = options.headers ? { ...(options.headers as Record<string, string>) } : {};
+  if (options.method === "POST" && !(options.body instanceof FormData)) {
+    headers["Content-Type"] = headers["Content-Type"] || "application/json";
+  }
+
   return fetch(url, {
     ...options,
     headers: {
-      ...options.headers,
+      ...headers,
       "X-XSRF-Token": getCsrfToken(),
       Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
     },
@@ -18,7 +23,21 @@ export default function request(url: string, options: RequestInit = {}) {
       if (response.status == 401) {
         window.location.href = `${ROOT_PATH}/oauth2/authorization/azure`;
       }
+      if (!response.ok) {
+        throw new Error(`网络请求失败，状态码：${response.status}`);
+      }
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        return response.json();
+      }
       return response;
+    })
+    .then((data) => {
+      return data.data || data;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      throw error;
     });
 }
 
@@ -30,9 +49,8 @@ export async function getCalenderData(startStr: string, endStr: string, teachers
     students: students.join(","),
   }).toString();
   return await request(`${ROOT_PATH}/data?${params}`)
-    .then((response) => response.json())
     .then((data) => {
-      const events = data.data;
+      const events = data;
       events.forEach((event: any) => {
         event.title = event.courseName;
         event.resource = event.classroom;
@@ -50,21 +68,11 @@ export async function getCalenderData(startStr: string, endStr: string, teachers
 }
 
 export async function getAllTeachers() {
-  return await request(`${ROOT_PATH}/teacher`)
-    .then((response) => response.json())
-    .then((data) => {
-      return data.data;
-    })
-    .catch((error) => console.error("Error:", error));
+  return await request(`${ROOT_PATH}/teacher`);
 }
 
 export async function getAllStudents() {
-  return await request(`${ROOT_PATH}/student`)
-    .then((response) => response.json())
-    .then((data) => {
-      return data.data;
-    })
-    .catch((error) => console.error("Error:", error));
+  return await request(`${ROOT_PATH}/student`);
 }
 
 export interface ClassroomType {
@@ -75,76 +83,44 @@ export interface ClassroomType {
 }
 
 export async function getClassroom(): Promise<ClassroomType[]> {
-  return await request(`${ROOT_PATH}/classroom`)
-    .then((response) => response.json())
-    .then((data) => {
-      return data.data;
-    })
-    .catch((error) => console.error("Error:", error));
+  return await request(`${ROOT_PATH}/classroom`);
 }
 
 export async function saveClassroom(data: ClassroomType) {
   return await request(`${ROOT_PATH}/classroom`, {
     method: "POST",
     body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      return data.data;
-    })
-    .catch((error) => console.error("Error:", error));
+  });
 }
 
 export async function deleteClassroom(id: number) {
   return await request(`${ROOT_PATH}/classroom/${id}`, {
     method: "DELETE",
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      return data.data;
-    })
-    .catch((error) => console.error("Error:", error));
+  });
 }
 
 export async function getClassname(): Promise<string[]> {
-  return await request(`${ROOT_PATH}/classname`)
-    .then((response) => response.json())
-    .then((data) => {
-      return data.data;
-    })
-    .catch((error) => console.error("Error:", error));
+  return await request(`${ROOT_PATH}/classname`);
 }
 
 export const uploadExcel = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await request(`${ROOT_PATH}/upload`, {
+  return await request(`${ROOT_PATH}/upload`, {
     method: "POST",
     body: formData,
   });
-
-  if (!response.ok) {
-    throw new Error("Upload failed");
-  }
-
-  return response.json();
 };
 
 export const uploadResultExcel = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await request(`${ROOT_PATH}/resultUpload`, {
+  return await request(`${ROOT_PATH}/resultUpload`, {
     method: "POST",
     body: formData,
   });
-
-  if (!response.ok) {
-    throw new Error("Upload failed");
-  }
-
-  return response.json();
 };
 
 export const downloadExcel = async () => {
