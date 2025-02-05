@@ -76,7 +76,7 @@ public class AppService {
     }
 
 
-    private void detection(List<OutputData> dataList) {
+    public void detection(List<OutputData> dataList) {
         var result = gaService.detection(dataList, classroomService.getAllClassrooms());
         List<Course> courseList = new ArrayList<>();
         int i = 1;

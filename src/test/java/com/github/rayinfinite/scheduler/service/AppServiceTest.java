@@ -1,14 +1,13 @@
 package com.github.rayinfinite.scheduler.service;
 
-import com.github.rayinfinite.scheduler.entity.Cohort;
-import com.github.rayinfinite.scheduler.entity.Course;
-import com.github.rayinfinite.scheduler.entity.Timeslot;
+import com.github.rayinfinite.scheduler.entity.*;
 import com.github.rayinfinite.scheduler.repository.CourseRepository;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,11 +15,17 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -56,6 +61,84 @@ class AppServiceTest {
         // 验证结果
         assertThat(result).isEqualTo("success");
     }
+
+    @Test
+    void testDetectionUpload() throws IOException {
+        // 创建一个模拟的 Excel 文件
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "detection_test.xlsx",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ExcelGenerator.createTestExcel()
+        );
+
+        // 创建测试数据
+        Registration testRegistration = new Registration("cohort01", 30, "course01");
+        // 设置 mock 行为
+        List<Registration> registrations = new ArrayList<>();
+        registrations.add(testRegistration);
+
+        doNothing().when(gaService).updateRegistrations(any());
+
+        // 执行测试
+        String result = appService.detectionUpload(file);
+
+        // 验证结果
+        assertThat(result).isEqualTo("success");
+        verify(gaService).updateRegistrations(any());
+        verify(gaService).detection(any(), any());
+    }
+
+    @Test
+    public void testDetection() {
+        // 创建模拟的 OutputData 列表
+        List<OutputData> dataList = new ArrayList<>();
+
+        OutputData outputData1 = new OutputData();
+        outputData1.setPracticeArea("PA1");
+        outputData1.setCourseName("Course1");
+        outputData1.setCourseCode("CC01");
+        outputData1.setDuration(2);
+        outputData1.setSoftware("S1");
+        outputData1.setCohort("Cohort1");
+        outputData1.setRun(1);
+
+        String dateString = "2025-02-01T00:00:00.000Z";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
+        Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        outputData1.setCourseDate(date);
+
+        outputData1.setWeek("Saturday");
+        outputData1.setClassroom("Room1");
+        outputData1.setTeacher1("Teacher1");
+        outputData1.setTeacher2("Teacher2");
+        outputData1.setTeacher3("Teacher3");
+        outputData1.setManager("Teacher1");
+        outputData1.setCert("GradCert1");
+
+        dataList.add(outputData1);
+
+        // 模拟 classroomService 和 gaService 的返回值
+        when(classroomService.getAllClassrooms()).thenReturn(new ArrayList<>());
+        when(gaService.detection(eq(dataList), anyList())).thenReturn(dataList);
+
+        // 调用检测方法
+        appService.detection(dataList);
+
+        // 验证 courseList 的大小，即数据保存是否成功
+        verify(courseRepository, times(1)).deleteAll(); // 确保删除操作被调用一次
+        verify(courseRepository, times(1)).saveAll(anyList()); // 确保保存操作被调用一次
+
+        // 通过 saveAll 返回的 List 来验证数据大小
+        ArgumentCaptor<List<Course>> captor = ArgumentCaptor.forClass(List.class);
+        verify(courseRepository).saveAll(captor.capture());
+        List<Course> savedCourseList = captor.getValue();
+
+        // 验证数据保存数量
+        assertEquals(1, savedCourseList.size(), "Expected 1 course to be saved.");
+    }
+
 
     @Test
     void testGap() {
@@ -122,6 +205,18 @@ class AppServiceTest {
             .hasSize(4)
             .containsExactly("Teacher1", "Teacher2", "Teacher3", "Teacher4");
     }
+    @Test
+    void testGetAllCohorts() {
+        // 准备测试数据
+        when(courseRepository.findCohort()).thenReturn(Arrays.asList("Cohort1", "Cohort2"));
+
+        // 执行测试
+        List<String> result = appService.getAllCohorts();
+
+        // 验证结果
+        assertThat(result).hasSize(2).containsExactly("Cohort1", "Cohort2");
+    }
+
 
     private Course createCourse(String teacher1, String teacher2, String teacher3) {
         Course course = new Course();
@@ -130,6 +225,8 @@ class AppServiceTest {
         course.setTeacher3(teacher3);
         return course;
     }
+
+
 
     // 辅助方法：创建测试用的 Excel 文件
     private static class ExcelGenerator {
