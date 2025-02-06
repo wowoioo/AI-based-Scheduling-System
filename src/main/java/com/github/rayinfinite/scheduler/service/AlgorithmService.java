@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -25,12 +23,11 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AppService {
+public class AlgorithmService {
     private final CourseRepository courseRepository;
     private final ClassroomService classroomService;
     private final GAService gaService;
     private final Lock lock = new ReentrantLock();
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     public String upload(MultipartFile file) throws IOException {
         lock.lock();
@@ -150,34 +147,5 @@ public class AppService {
 
         // 关闭 ExcelWriter
         excelWriter.finish();
-    }
-
-
-    public List<Course> findByCourseDateBetween(String startDate, String endDate, List<String> teachers, List<String> cohorts) throws ParseException {
-        Date start = formatter.parse(startDate);
-        Date end = formatter.parse(endDate);
-        List<Course> data = courseRepository.findByCourseDateBetween(start, end);
-        if (teachers != null && !teachers.isEmpty()) {
-            data.removeIf(inputData -> !teachers.contains(inputData.getTeacher1())
-                    && !teachers.contains(inputData.getTeacher2())
-                    && !teachers.contains(inputData.getTeacher3()));
-        }
-        if(cohorts != null && !cohorts.isEmpty()) {
-            data.removeIf(inputData -> !cohorts.contains(inputData.getCohort()));
-        }
-        return data;
-    }
-
-    public List<String> getAllTeachers() {
-        List<String> list = new ArrayList<>();
-        list.addAll(courseRepository.findTeacher1());
-        list.addAll(courseRepository.findTeacher2());
-        list.addAll(courseRepository.findTeacher3());
-        return list.stream().filter(Objects::nonNull).filter(s -> !s.isEmpty())
-                .distinct().sorted().toList();
-    }
-
-    public List<String> getAllCohorts() {
-        return courseRepository.findCohort();
     }
 }
