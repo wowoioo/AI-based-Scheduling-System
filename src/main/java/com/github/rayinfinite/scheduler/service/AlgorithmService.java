@@ -77,24 +77,10 @@ public class AlgorithmService {
         var result = gaService.detection(dataList, classroomService.getAllClassrooms());
         List<Course> courseList = new ArrayList<>();
         int i = 1;
-        for(OutputData output : result) {
+        for (OutputData output : result) {
             Course course = new Course();
+            BeanUtils.copyProperties(course, output);
             course.setId(i++);
-            course.setPracticeArea(output.getPracticeArea());
-            course.setCourseName(output.getCourseName());
-            course.setCourseCode(output.getCourseCode());
-            course.setDuration(output.getDuration());
-            course.setSoftware(output.getSoftware());
-            course.setCohort(output.getCohort());
-            course.setRun(output.getRun());
-            course.setCourseDate(output.getCourseDate());
-            course.setWeek(output.getWeek());
-            course.setClassroom(output.getClassroom());
-            course.setTeacher1(output.getTeacher1());
-            course.setTeacher2(output.getTeacher2());
-            course.setTeacher3(output.getTeacher3());
-            course.setManager(output.getManager());
-            course.setCert(output.getCert());
             courseList.add(course);
         }
         courseRepository.deleteAll();
@@ -117,14 +103,14 @@ public class AlgorithmService {
 
         List<Course> courseList = courseRepository.findAll();
         List<OutputData> outputDataList = new ArrayList<>();
-        for(Course course : courseList) {
+        for (Course course : courseList) {
             OutputData output = new OutputData();
             BeanUtils.copyProperties(course, output);
             outputDataList.add(output);
         }
 
-        List<ClashData> clashInfos = gaService.getClashes();
-        List<RoomUtilization> roomUtilizations = gaService.getRoomUtilizations();
+        List<ClashData> clashInfos = gaService.getClashInfos();
+        List<RoomUtilization> roomUtilizations = gaService.getRoomUtilization();
         List<Registration> registrations = gaService.getRegistrations();
 
         ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream()).build();

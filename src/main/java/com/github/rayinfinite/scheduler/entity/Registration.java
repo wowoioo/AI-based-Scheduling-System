@@ -11,17 +11,14 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@ColumnWidth(16)
+@ColumnWidth(17)
 @HeadFontStyle(fontName = "Arial", fontHeightInPoints = 11, bold = BooleanEnum.TRUE)
 @HeadStyle(fillPatternType = FillPatternTypeEnum.SOLID_FOREGROUND, fillForegroundColor = 15)
 public class Registration {
-    @ColumnWidth(17)
     @ExcelProperty("Cohort")
     private String cohort;
-    @ColumnWidth(17)
     @ExcelProperty("Headcount")
     private int headcount;
-    @ColumnWidth(17)
     @ExcelProperty("Course Name")
     private String courseName;
 

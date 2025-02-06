@@ -11,23 +11,15 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@ColumnWidth(16)
+@ColumnWidth(17)
 @HeadFontStyle(fontName = "Arial", fontHeightInPoints = 11, bold = BooleanEnum.TRUE)
 @HeadStyle(fillPatternType = FillPatternTypeEnum.SOLID_FOREGROUND, fillForegroundColor = 15)
 public class RoomUtilization {
-    @ColumnWidth(17)
     @ExcelProperty("Room")
     private String room;
-    @ColumnWidth(17)
     @ExcelProperty("Used Days")
     private int usedDays;
-    @ColumnWidth(17)
     @ExcelProperty("Utilization Rate")
     private String utilizationRate;
 
-//    public RoomUtilization(String room, int usedDays, String utilizationRate) {
-//        this.room = room;
-//        this.usedDays = usedDays;
-//        this.utilizationRate = utilizationRate;
-//    }
 }

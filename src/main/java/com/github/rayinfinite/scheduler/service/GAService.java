@@ -6,6 +6,7 @@ import com.github.rayinfinite.scheduler.ga_course.Timetable;
 import com.github.rayinfinite.scheduler.ga_course.config.GA;
 import com.github.rayinfinite.scheduler.ga_course.config.Population;
 import com.github.rayinfinite.scheduler.utils.PublicHoliday;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -19,12 +20,14 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+@Getter
 @Slf4j
 @Service
 public class GAService {
     private List<ClashData> clashInfos = new ArrayList<>();
     private List<RoomUtilization> roomUtilization = new ArrayList<>();
     private List<Registration> registrations = new ArrayList<>();
+
     public List<Course> gap(List<Course> courseList, List<Cohort> cohortList, List<Timeslot> timeslotList,
                             List<Classroom> classroomList) {
         List<Timeslot> filtedTimeslotList = timeslotList.stream().filter(this::checkTimeslot).toList();
@@ -168,17 +171,7 @@ public class GAService {
 
     private Course convertToCourse(OutputData data) {
         Course course = new Course();
-        course.setCourseCode(data.getCourseCode());
-        course.setCourseName(data.getCourseName());
-        course.setPracticeArea(data.getPracticeArea());
-        course.setDuration(data.getDuration());
-        course.setSoftware(data.getSoftware());
-        course.setCourseDate(data.getCourseDate());
-        course.setClassroom(data.getClassroom());
-        course.setTeacher1(data.getTeacher1());
-        course.setTeacher2(data.getTeacher2());
-        course.setTeacher3(data.getTeacher3());
-        course.setCohort(data.getCohort());
+        BeanUtils.copyProperties(course, data);
         return course;
     }
 
@@ -321,10 +314,10 @@ public class GAService {
                 String Date = timetable.getTimeslot(plan.getTimeslotId()).getDate().toString();
 //                log.info("Clash at Room: {}, Date: {}",
 //                        roomName, Date);
-                if(i == 0) {
+                if (i == 0) {
                     clashInfos.add(new ClashData(clashType, clashPlans.size(), roomName, Date));
                     i++;
-                }else {
+                } else {
                     clashInfos.add(new ClashData(clashType, null, roomName, Date));
                 }
             }
@@ -428,18 +421,6 @@ public class GAService {
         }
         IntStream.range(0, courseList.size()).forEach(i -> courseList.get(i).setId(i + 1));
         return courseList;
-    }
-
-    public List<ClashData> getClashes() {
-        return this.clashInfos;
-    }
-
-    public List<RoomUtilization> getRoomUtilizations() {
-        return this.roomUtilization;
-    }
-
-    public List<Registration> getRegistrations() {
-        return this.registrations;
     }
 
     public void updateRegistrations(List<Registration> newRegistrations) {
