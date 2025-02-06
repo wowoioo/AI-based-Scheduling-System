@@ -6,6 +6,7 @@ import com.github.rayinfinite.scheduler.utils.PublicHoliday;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.security.SecureRandom;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -406,8 +407,10 @@ public class Timetable {
                     return dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY; // 过滤工作日
                 })
                 .toList();
-        return weekdaySlots.get(new Random().nextInt(weekdaySlots.size()));
+        SecureRandom secureRandom = new SecureRandom();
+        return weekdaySlots.get(secureRandom.nextInt(weekdaySlots.size()));
     }
+
 
     public Timeslot getRandomFridaySaturdayTimeslot() {
         List<Timeslot> fridaySaturdaySlots = this.timeslots.values().stream()
@@ -417,7 +420,8 @@ public class Timetable {
                     return dayOfWeek == DayOfWeek.FRIDAY || dayOfWeek == DayOfWeek.SATURDAY; // 过滤周五和周六
                 })
                 .toList();
-        return fridaySaturdaySlots.get(new Random().nextInt(fridaySaturdaySlots.size()));
+        SecureRandom secureRandom = new SecureRandom();
+        return fridaySaturdaySlots.get(secureRandom.nextInt(fridaySaturdaySlots.size()));
     }
 
     public void setPlans(TeachingPlan[] plans) {
