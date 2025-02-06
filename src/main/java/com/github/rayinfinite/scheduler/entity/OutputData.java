@@ -12,34 +12,41 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@ColumnWidth(17)
+@ColumnWidth(16)
 @HeadFontStyle(fontName = "Arial", fontHeightInPoints = 11, bold = BooleanEnum.TRUE)
 @HeadStyle(fillPatternType = FillPatternTypeEnum.SOLID_FOREGROUND, fillForegroundColor = 15)
 public class OutputData {
+    @ColumnWidth(17)
     @ExcelProperty("Practice Area (PA)")
     String practiceArea;
 
     @ExcelProperty("Course Name")
     String courseName;
 
+    @ColumnWidth(12)
     @ExcelProperty("Course Code")
     String courseCode;
 
     @ExcelProperty("Duration (Days)")
     Integer duration;
 
+    @ColumnWidth(9)
     @ExcelProperty("Software")
     String software;
 
+    @ColumnWidth(8)
     @ExcelProperty("Cohort")
     String cohort;
 
+    @ColumnWidth(8)
     @ExcelProperty("Run #")
     Integer run;
 
+    @ColumnWidth(12)
     @ExcelProperty(value = "Course Date", converter = DateConverter.class)
     Date courseDate;
 
+    @ColumnWidth(11)
     @ExcelProperty("Course Day")
     String week;
 
@@ -58,6 +65,7 @@ public class OutputData {
     @ExcelProperty("Course Manager")
     String manager;
 
+    @ColumnWidth(17)
     @ExcelProperty("Grad Cert (MTech)")
     String cert;
 }
