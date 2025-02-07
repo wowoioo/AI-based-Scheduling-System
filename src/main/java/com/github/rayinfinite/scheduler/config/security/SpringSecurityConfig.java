@@ -55,8 +55,6 @@ public class SpringSecurityConfig {
                 .authenticationEntryPoint(securityHandler)
                 // 鉴权失败异常
                 .accessDeniedHandler(securityHandler));
-        // 其他未知异常. 尽量提前加载。
-        //http.addFilterBefore(globalSpringSecurityExceptionHandler, SecurityContextHolderFilter.class);
     }
 
     @Bean

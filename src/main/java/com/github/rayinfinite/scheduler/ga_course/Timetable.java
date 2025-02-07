@@ -15,19 +15,19 @@ import java.util.*;
 @Slf4j
 @Getter
 public class Timetable {
-    @Getter
+    private final SecureRandom secureRandom = new SecureRandom();
     private final Map<Integer, Classroom> rooms;
     private final Map<Integer, Course> courses;
     private final Map<Integer, Cohort> cohorts;
     private final Map<Integer, Timeslot> timeslots;
     private final Map<Integer, Professor> professors;
 
-    @Getter
     private TeachingPlan[] plans;
 
     private int plansNum = 0;
 
     //浅拷贝，用于适应度计算
+    @SuppressWarnings("CopyConstructorMissesField")
     public Timetable(Timetable cloneable) {
         this.rooms = cloneable.getRooms();
         this.courses = cloneable.getCourses();
@@ -77,7 +77,8 @@ public class Timetable {
                         Timeslot timeslot = this.getTimeslot(timeslotId);
                         int dayOfWeek = getDayOfWeekFromDate(timeslot.getDate());
 
-                        LocalDate scheduledLocalDate = timeslot.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                        LocalDate scheduledLocalDate =
+                                timeslot.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
                         // 根据 cohortType 检查 timeslot 是否合适
                         if (("0".equals(cohortType) && (dayOfWeek == 6 || dayOfWeek == 0)) ||
@@ -407,7 +408,6 @@ public class Timetable {
                     return dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY; // 过滤工作日
                 })
                 .toList();
-        SecureRandom secureRandom = new SecureRandom();
         return weekdaySlots.get(secureRandom.nextInt(weekdaySlots.size()));
     }
 
@@ -420,7 +420,6 @@ public class Timetable {
                     return dayOfWeek == DayOfWeek.FRIDAY || dayOfWeek == DayOfWeek.SATURDAY; // 过滤周五和周六
                 })
                 .toList();
-        SecureRandom secureRandom = new SecureRandom();
         return fridaySaturdaySlots.get(secureRandom.nextInt(fridaySaturdaySlots.size()));
     }
 
