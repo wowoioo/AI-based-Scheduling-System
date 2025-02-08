@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = {CourseController.class})
 @ExtendWith(SpringExtension.class)
 @DisabledInAotMode
-public class CourseControllerDiffblueTest {
+class CourseControllerDiffblueTest {
     @Autowired
     private CourseController algorithmController;
     

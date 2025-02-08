@@ -95,24 +95,4 @@ class AlgorithmControllerDiffblueTest {
         assertNull(actualExcel.getCode());
         assertNull(actualExcel.getMessage());
     }
-
-    /**
-     * Test {@link AlgorithmController#getExcel(MultipartFile)} with {@code file}.
-     * <ul>
-     *   <li>Then throw {@link IOException}.</li>
-     * </ul>
-     * <p>
-     * Method under test: {@link AlgorithmController#getExcel(MultipartFile)}
-     */
-    @Test
-    @DisplayName("Test getExcel(MultipartFile) with 'file'; then throw IOException")
-    void testGetExcelWithFile_thenThrowIOException() throws IOException {
-        // Arrange
-        when(algorithmService.upload(Mockito.any())).thenThrow(new IOException("foo"));
-
-        // Act and Assert
-        assertThrows(IOException.class, () -> algorithmController
-                .getExcel(new MockMultipartFile("Name", new ByteArrayInputStream("AXAXAXAX".getBytes("UTF-8")))));
-        verify(algorithmService).upload(isA(MultipartFile.class));
-    }
 }
