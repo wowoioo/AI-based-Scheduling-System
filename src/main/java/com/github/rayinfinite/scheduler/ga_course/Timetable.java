@@ -6,7 +6,6 @@ import com.github.rayinfinite.scheduler.utils.PublicHoliday;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.security.SecureRandom;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -26,6 +25,8 @@ public class Timetable {
     private TeachingPlan[] plans;
 
     private int plansNum = 0;
+
+    private final Random random = new Random();
 
     //浅拷贝，用于适应度计算
     public Timetable(Timetable cloneable) {
@@ -149,7 +150,7 @@ public class Timetable {
 
     public Classroom getRandomRoom() {
         Object[] roomsArray = this.rooms.values().toArray();
-        return (Classroom) roomsArray[(int) (roomsArray.length * Math.random())];
+        return (Classroom) roomsArray[(random.nextInt(roomsArray.length))];
     }
 
     public Course getCourse(int courseId) {
@@ -407,8 +408,7 @@ public class Timetable {
                     return dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY; // 过滤工作日
                 })
                 .toList();
-        SecureRandom secureRandom = new SecureRandom();
-        return weekdaySlots.get(secureRandom.nextInt(weekdaySlots.size()));
+        return weekdaySlots.get(random.nextInt(weekdaySlots.size()));
     }
 
 
@@ -420,8 +420,7 @@ public class Timetable {
                     return dayOfWeek == DayOfWeek.FRIDAY || dayOfWeek == DayOfWeek.SATURDAY; // 过滤周五和周六
                 })
                 .toList();
-        SecureRandom secureRandom = new SecureRandom();
-        return fridaySaturdaySlots.get(secureRandom.nextInt(fridaySaturdaySlots.size()));
+        return fridaySaturdaySlots.get(random.nextInt(fridaySaturdaySlots.size()));
     }
 
     public void setPlans(TeachingPlan[] plans) {

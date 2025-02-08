@@ -171,7 +171,7 @@ public class GAService {
 
     private Course convertToCourse(OutputData data) {
         Course course = new Course();
-        BeanUtils.copyProperties(course, data);
+        BeanUtils.copyProperties(data, course);
         return course;
     }
 
