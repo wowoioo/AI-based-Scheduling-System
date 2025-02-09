@@ -14,19 +14,14 @@ import java.util.*;
 @Slf4j
 @Getter
 public class Timetable {
-    @Getter
     private final Map<Integer, Classroom> rooms;
     private final Map<Integer, Course> courses;
     private final Map<Integer, Cohort> cohorts;
     private final Map<Integer, Timeslot> timeslots;
     private final Map<Integer, Professor> professors;
-
-    @Getter
-    private TeachingPlan[] plans;
-
-    private int plansNum = 0;
-
     private final Random random = new Random();
+    private TeachingPlan[] plans;
+    private int plansNum = 0;
 
     //浅拷贝，用于适应度计算
     public Timetable(Timetable cloneable) {
@@ -78,7 +73,8 @@ public class Timetable {
                         Timeslot timeslot = this.getTimeslot(timeslotId);
                         int dayOfWeek = getDayOfWeekFromDate(timeslot.getDate());
 
-                        LocalDate scheduledLocalDate = timeslot.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                        LocalDate scheduledLocalDate =
+                                timeslot.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
                         // 根据 cohortType 检查 timeslot 是否合适
                         if (("0".equals(cohortType) && (dayOfWeek == 6 || dayOfWeek == 0)) ||
@@ -121,7 +117,6 @@ public class Timetable {
         }
         this.plans = plans;
     }
-
 
     public List<Course> getCoursesByCohortId(int cohortId) {
         List<Course> cohortCourses = new ArrayList<>();
@@ -278,7 +273,6 @@ public class Timetable {
         return clashCategories;
     }
 
-
     public int calcPenalty() {
         int penalty = 0;
 
@@ -411,7 +405,6 @@ public class Timetable {
         return weekdaySlots.get(random.nextInt(weekdaySlots.size()));
     }
 
-
     public Timeslot getRandomFridaySaturdayTimeslot() {
         List<Timeslot> fridaySaturdaySlots = this.timeslots.values().stream()
                 .filter(slot -> {
@@ -427,6 +420,4 @@ public class Timetable {
         this.plans = plans;
         this.plansNum = plans.length;
     }
-
-
 }

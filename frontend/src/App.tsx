@@ -29,15 +29,15 @@ function App() {
     const data = await getUser();
     if (!data) {
       window.location.href = `${ROOT_PATH}/oauth2/authorization/azure`;
-    }else{
+    } else {
       getJwtToken();
     }
   };
 
   return (
-    <div className="px-2 sm:px-6">
-      <div className={`flex flex-col lg:flex-row justify-between items-center gap-4`}>
-        <h1 className="my-5">AI Course Scheduling System</h1>
+    <div className="px-2 sm:px-6 ">
+      <div className="flex flex-col items-center justify-between my-5 lg:flex-row">
+        <h1>AI Course Scheduling System</h1>
         {data ? (
           <span>Hello {name}</span>
         ) : (

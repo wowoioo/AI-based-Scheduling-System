@@ -6,7 +6,6 @@ import com.github.rayinfinite.scheduler.ga_course.Timetable;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,11 +13,10 @@ import java.util.Random;
 
 @Getter
 public class Individual {
+    private final Random random = new Random();
     private int[] chromosome;
     @Setter
     private double fitness = -1;
-
-    private final Random random = new Random();
 
     public Individual(int chromosomeLength) {
         this.chromosome = new int[chromosomeLength];
@@ -30,7 +28,6 @@ public class Individual {
             }
         }
     }
-
 
     public Individual(Timetable timetable) {
         int plansNum = timetable.getPlansNum(timetable);
